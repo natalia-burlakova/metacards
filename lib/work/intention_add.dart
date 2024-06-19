@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/data/constants.dart';
 import 'package:metacards/data/models/work_in_progress.dart';
-import 'package:metacards/data/work_functions.dart';
 import 'package:metacards/general/const/app_colors.dart';
 
 import 'package:metacards/general/ui/button.dart';
@@ -49,7 +49,7 @@ class _IntentionAddState extends State<IntentionAdd> {
               Button(
                   label: "Начать работу",
                   onTap: () {
-                    WorkMethods.addWork(
+                    AppData.workMethods!.addWork(
                         WorkInProgress(intention: _intentionController.text));
                     while (GoRouter.of(context).location != "/") {
                       GoRouter.of(context).pop(true);

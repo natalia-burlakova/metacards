@@ -11,12 +11,15 @@ class PageGeneral extends StatefulWidget {
   final Key? pageKey;
   final Widget? body;
   final String title;
-  const PageGeneral(
-      {super.key,
-      this.pageKey,
-      this.canBack = false,
-      this.body,
-      this.title = ''});
+  final Function? onUpdate;
+  const PageGeneral({
+    super.key,
+    this.pageKey,
+    this.canBack = false,
+    this.body,
+    this.title = '',
+    this.onUpdate,
+  });
 
   @override
   State<PageGeneral> createState() => _PageGeneralState();
@@ -61,6 +64,7 @@ class _PageGeneralState extends State<PageGeneral> {
                 ),
               ),
             ),
+            titleSpacing: 0.0,
             title: CardsAppBar(
               intention: (cnst.AppData.appUser?.creativeModeWork == null)
                   ? ((cnst.AppData.appUser?.works.isNotEmpty ?? false)
@@ -83,7 +87,14 @@ class _PageGeneralState extends State<PageGeneral> {
             )),
         backgroundColor:
             widget.canBack ? AppColor.buttonColor : AppColor.backgroundColor,
-        drawer: const MenuDrawer(),
+        drawer: MenuDrawer(
+          onUpdate: () {
+            setState(() {});
+            if (widget.onUpdate != null) {
+              widget.onUpdate!();
+            }
+          },
+        ),
         body: widget.body ?? const SizedBox.shrink());
   }
 }

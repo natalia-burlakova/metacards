@@ -29,6 +29,9 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return PageGeneral(
         pageKey: cnst.globalKey,
+        onUpdate: () {
+          setState(() {});
+        },
         body: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Column(

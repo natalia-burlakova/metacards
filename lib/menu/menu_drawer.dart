@@ -8,7 +8,8 @@ import 'package:metacards/menu/menu_item.dart';
 import 'package:metacards/data/constants.dart' as cnst;
 
 class MenuDrawer extends StatefulWidget {
-  const MenuDrawer({super.key});
+  final Function? onUpdate;
+  const MenuDrawer({super.key, this.onUpdate});
 
   @override
   State<MenuDrawer> createState() => _MenuDrawerState();
@@ -89,18 +90,26 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
               MenuItem(
                 title: "Видео-урок",
-                navigation: () {
-
-                },
+                navigation: () {},
               ),
               MenuItem(
                 title: "Творческий режим",
+                titleTextStyle: cnst.AppData.appUser!.creativeModeWork == null
+                    ? null
+                    : AppTextStyles.bold16,
                 navigation: () {
-                  if(cnst.AppData.appUser!.creativeModeWork == null){
+                  if (cnst.AppData.appUser!.creativeModeWork == null) {
                     //включить творческий режим
+                    cnst.AppData.creativeModeTurnOn();
+                  } else {
+                    //выключить
+                    cnst.AppData.creativeModeTurnOff();
                   }
-                  else{
-                    //выключить 
+                  while (GoRouter.of(context).location != "/") {
+                    GoRouter.of(context).pop(true);
+                  }
+                  if (widget.onUpdate != null) {
+                    widget.onUpdate!();
                   }
                 },
               ),

@@ -13,7 +13,7 @@ _$_AppUser _$$_AppUserFromJson(Map<String, dynamic> json) => _$_AppUser(
           const [],
       creativeModeWork: json['creativeModeWork'] == null
           ? null
-          : WorkInProgress.fromJson(
+          : CreativeWork.fromJson(
               json['creativeModeWork'] as Map<String, dynamic>),
       currentWorkIndex: json['currentWorkIndex'] as int? ?? 0,
     );

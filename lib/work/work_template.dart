@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metacards/data/work_functions.dart';
+import 'package:metacards/data/constants.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/ui/button.dart';
 import 'package:metacards/general/ui/message_dialog.dart';
 import 'package:metacards/general/ui/page_general.dart';
 import 'package:metacards/general/utils/screen_adapt.dart';
-import 'package:metacards/data/constants.dart' as cnst;
 
 class WorkTemplate extends StatefulWidget {
   const WorkTemplate({super.key});
@@ -40,7 +39,7 @@ class _WorkTemplateState extends State<WorkTemplate> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '1)  ${WorkMethods.getCurrentEmotionText()}',
+                      '1)  ${AppData.workMethods!.getCurrentEmotionText()}',
                       style: AppTextStyles.bold16,
                     ),
                     Padding(
@@ -56,16 +55,17 @@ class _WorkTemplateState extends State<WorkTemplate> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              prevVerb();
-                            },
-                            child: Icon(
-                              Icons.arrow_left,
-                              size: 40.0.a,
+                          if (AppData.workMethods!.canPrevVerbTap())
+                            InkWell(
+                              onTap: () {
+                                prevVerb();
+                              },
+                              child: Icon(
+                                Icons.arrow_left,
+                                size: 40.0.a,
+                              ),
                             ),
-                          ),
-                          WorkMethods.getCurrentVerbTitleWidget(),
+                          AppData.workMethods!.getCurrentVerbTitleWidget(),
                           InkWell(
                             onTap: () {
                               nextVerb();
@@ -162,12 +162,13 @@ class _WorkTemplateState extends State<WorkTemplate> {
                     SizedBox(
                       height: 10.0.a,
                     ),
-                    Center(
-                        child: Button(
-                            label: "Предыдущий глагол",
-                            onTap: () {
-                              prevVerb();
-                            }))
+                    if (AppData.workMethods!.canPrevVerbTap())
+                      Center(
+                          child: Button(
+                              label: "Предыдущий глагол",
+                              onTap: () {
+                                prevVerb();
+                              }))
                   ]),
             ),
           ),
@@ -175,60 +176,49 @@ class _WorkTemplateState extends State<WorkTemplate> {
   }
 
   void prevVerb() {
-    WorkMethods.prevVerbSet();
+    AppData.workMethods!.prevVerbSet();
     setState(() {});
   }
 
   void nextVerb() {
-    final work = (cnst.AppData.appUser?.works.isEmpty ?? true)
-        ? null
-        : cnst.AppData.appUser
-            ?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
-    final emotion = (work != null && work.emotions.isNotEmpty)
-        ? work.emotions[work.currentEmotionIndex]
-        : null;
-    if (emotion != null) {
-      if (emotion.verbIds.isEmpty) {
-        WorkMethods.generateVerbsList();
+    final verbState = AppData.workMethods!.canNextVerbTap();
+    switch (verbState) {
+      case VerbState.generateList:
+        AppData.workMethods!.generateVerbsList();
         setState(() {});
-      } else {
-        //get next verb
-        if (emotion.verbIds.isNotEmpty &&
-            emotion.verbIds.length >= emotion.currentVerbIndex) {
-          if (emotion.currentVerbIndex == emotion.verbIds.length - 1) {
-            //show dialog and select next emotion
-            showDialog(
-              context: context,
-              builder: (_) {
-                return MessageDialog(
-                  height: 250,
-                  message:
-                      'Вы проработали все глаголы для этой эмоции! Переходите к следующей.',
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.thumb_up,
-                        size: 50,
-                      ),
-                      Text(
-                        'Поздравляем!',
-                        style: AppTextStyles.bold18,
-                      )
-                    ],
+        break;
+      case VerbState.end:
+        //show dialog and select next emotion
+        showDialog(
+          context: context,
+          builder: (_) {
+            return MessageDialog(
+              height: 250,
+              message:
+                  'Вы проработали все глаголы для этой эмоции! Переходите к следующей.',
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.thumb_up,
+                    size: 50,
                   ),
-                );
-              },
-            ).then((value) {
-              while (GoRouter.of(context).location != "/") {
-                GoRouter.of(context).pop(true);
-              }
-            });
-          } else {
-            WorkMethods.nextVerbSet();
-            setState(() {});
+                  Text(
+                    'Поздравляем!',
+                    style: AppTextStyles.bold18,
+                  )
+                ],
+              ),
+            );
+          },
+        ).then((value) {
+          while (GoRouter.of(context).location != "/") {
+            GoRouter.of(context).pop(true);
           }
-        }
-      }
+        });
+        break;
+      default:
+        AppData.workMethods!.nextVerbSet();
+        setState(() {});
     }
   }
 }

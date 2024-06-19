@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:metacards/data/constants.dart' as cnst;
-import 'package:metacards/data/work_functions.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/ui/message_dialog.dart';
 import 'package:metacards/general/utils/screen_adapt.dart';
@@ -20,13 +19,6 @@ class _VerbCardState extends State<VerbCard> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height * 0.40;
-    final work = (cnst.AppData.appUser?.works.isEmpty ?? true)
-        ? null
-        : cnst.AppData.appUser
-            ?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
-    final emotion = (work != null && work.emotions.isNotEmpty)
-        ? work.emotions[work.currentEmotionIndex]
-        : null;
 
     return Stack(children: [
       SizedBox.expand(
@@ -37,7 +29,7 @@ class _VerbCardState extends State<VerbCard> {
               nextVerb();
             } else {
               //Left Swipe
-              WorkMethods.prevVerbSet();
+              cnst.AppData.workMethods!.prevVerbSet();
               if (widget.onUpdate != null) {
                 widget.onUpdate!();
               }
@@ -47,28 +39,25 @@ class _VerbCardState extends State<VerbCard> {
             nextVerb();
           },
           child: Image.asset(
-            emotion == null || emotion.verbIds.isEmpty
-                ? cnst.AssetPaths.verbsFront
-                : cnst.AssetPaths.verbsBack,
+            cnst.AppData.workMethods!.getVerbBackground(),
             fit: BoxFit.fill,
             width: MediaQuery.of(context).size.width,
             height: height,
           ),
         ),
       ),
-      if (emotion != null)
-        Positioned.fill(
-          bottom: 40.0.a,
-          right: 10.0.a,
-          left: 10.0.a,
-          child: Align(
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: WorkMethods.getVerbTitle(emotion, context),
-            ),
+      Positioned.fill(
+        bottom: 40.0.a,
+        right: 10.0.a,
+        left: 10.0.a,
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: cnst.AppData.workMethods!.getVerbTitle(context),
           ),
         ),
+      ),
       Positioned(
           bottom: 2.0.a,
           right: 2.0.a,
@@ -86,23 +75,19 @@ class _VerbCardState extends State<VerbCard> {
                     child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          (emotion == null || emotion.verbIds.isEmpty)
-                              ? '?'
-                              : (emotion.verbIds.length -
-                                      emotion.currentVerbIndex)
-                                  .toString(),
+                          cnst.AppData.workMethods!.getRestVerbCount(),
                           style: AppTextStyles.medium42,
                         ))),
               ],
             ),
           )),
-      if (emotion != null && emotion.currentVerbIndex > 0)
+      if (cnst.AppData.workMethods!.canPrevVerbTap())
         Positioned(
             bottom: 2.0.a,
             left: 2.0.a,
             child: InkWell(
               onTap: () {
-                WorkMethods.prevVerbSet();
+                cnst.AppData.workMethods!.prevVerbSet();
                 if (widget.onUpdate != null) {
                   widget.onUpdate!();
                 }
@@ -116,55 +101,44 @@ class _VerbCardState extends State<VerbCard> {
   }
 
   void nextVerb() {
-    final work = (cnst.AppData.appUser?.works.isEmpty ?? true)
-        ? null
-        : cnst.AppData.appUser
-            ?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
-    final emotion = (work != null && work.emotions.isNotEmpty)
-        ? work.emotions[work.currentEmotionIndex]
-        : null;
-    if (emotion != null) {
-      if (emotion.verbIds.isEmpty) {
-        WorkMethods.generateVerbsList();
+    final verbState = cnst.AppData.workMethods!.canNextVerbTap();
+    switch (verbState) {
+      case cnst.VerbState.generateList:
+        cnst.AppData.workMethods!.generateVerbsList();
         if (widget.onUpdate != null) {
           widget.onUpdate!();
         }
-      } else {
-        //get next verb
-        if (emotion.verbIds.isNotEmpty &&
-            emotion.verbIds.length >= emotion.currentVerbIndex) {
-          if (emotion.currentVerbIndex == emotion.verbIds.length - 1) {
-            //show dialog and select next emotion
-            showDialog(
-              context: context,
-              builder: (_) {
-                return MessageDialog(
-                  height: 250,
-                  message:
-                      'Вы проработали все глаголы для этой эмоции! Переходите к следующей.',
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.thumb_up,
-                        size: 50,
-                      ),
-                      Text(
-                        'Поздравляем!',
-                        style: AppTextStyles.bold18,
-                      )
-                    ],
+        break;
+      case cnst.VerbState.end:
+        //show dialog and select next emotion
+        showDialog(
+          context: context,
+          builder: (_) {
+            return MessageDialog(
+              height: 250,
+              message:
+                  'Вы проработали все глаголы для этой эмоции! Переходите к следующей.',
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.thumb_up,
+                    size: 50,
                   ),
-                );
-              },
+                  Text(
+                    'Поздравляем!',
+                    style: AppTextStyles.bold18,
+                  )
+                ],
+              ),
             );
-          } else {
-            WorkMethods.nextVerbSet();
-            if (widget.onUpdate != null) {
-              widget.onUpdate!();
-            }
-          }
+          },
+        );
+        break;
+      default:
+        cnst.AppData.workMethods!.nextVerbSet();
+        if (widget.onUpdate != null) {
+          widget.onUpdate!();
         }
-      }
     }
   }
 }

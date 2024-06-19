@@ -21,7 +21,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$AppUser {
   List<WorkInProgress> get works => throw _privateConstructorUsedError;
-  WorkInProgress? get creativeModeWork => throw _privateConstructorUsedError;
+  CreativeWork? get creativeModeWork => throw _privateConstructorUsedError;
   int get currentWorkIndex => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,10 +36,10 @@ abstract class $AppUserCopyWith<$Res> {
   @useResult
   $Res call(
       {List<WorkInProgress> works,
-      WorkInProgress? creativeModeWork,
+      CreativeWork? creativeModeWork,
       int currentWorkIndex});
 
-  $WorkInProgressCopyWith<$Res>? get creativeModeWork;
+  $CreativeWorkCopyWith<$Res>? get creativeModeWork;
 }
 
 /// @nodoc
@@ -67,7 +67,7 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
       creativeModeWork: freezed == creativeModeWork
           ? _value.creativeModeWork
           : creativeModeWork // ignore: cast_nullable_to_non_nullable
-              as WorkInProgress?,
+              as CreativeWork?,
       currentWorkIndex: null == currentWorkIndex
           ? _value.currentWorkIndex
           : currentWorkIndex // ignore: cast_nullable_to_non_nullable
@@ -77,12 +77,12 @@ class _$AppUserCopyWithImpl<$Res, $Val extends AppUser>
 
   @override
   @pragma('vm:prefer-inline')
-  $WorkInProgressCopyWith<$Res>? get creativeModeWork {
+  $CreativeWorkCopyWith<$Res>? get creativeModeWork {
     if (_value.creativeModeWork == null) {
       return null;
     }
 
-    return $WorkInProgressCopyWith<$Res>(_value.creativeModeWork!, (value) {
+    return $CreativeWorkCopyWith<$Res>(_value.creativeModeWork!, (value) {
       return _then(_value.copyWith(creativeModeWork: value) as $Val);
     });
   }
@@ -97,11 +97,11 @@ abstract class _$$_AppUserCopyWith<$Res> implements $AppUserCopyWith<$Res> {
   @useResult
   $Res call(
       {List<WorkInProgress> works,
-      WorkInProgress? creativeModeWork,
+      CreativeWork? creativeModeWork,
       int currentWorkIndex});
 
   @override
-  $WorkInProgressCopyWith<$Res>? get creativeModeWork;
+  $CreativeWorkCopyWith<$Res>? get creativeModeWork;
 }
 
 /// @nodoc
@@ -126,7 +126,7 @@ class __$$_AppUserCopyWithImpl<$Res>
       creativeModeWork: freezed == creativeModeWork
           ? _value.creativeModeWork
           : creativeModeWork // ignore: cast_nullable_to_non_nullable
-              as WorkInProgress?,
+              as CreativeWork?,
       currentWorkIndex: null == currentWorkIndex
           ? _value.currentWorkIndex
           : currentWorkIndex // ignore: cast_nullable_to_non_nullable
@@ -156,7 +156,7 @@ class _$_AppUser implements _AppUser {
   }
 
   @override
-  final WorkInProgress? creativeModeWork;
+  final CreativeWork? creativeModeWork;
   @override
   @JsonKey()
   final int currentWorkIndex;
@@ -203,7 +203,7 @@ class _$_AppUser implements _AppUser {
 abstract class _AppUser implements AppUser {
   factory _AppUser(
       {final List<WorkInProgress> works,
-      final WorkInProgress? creativeModeWork,
+      final CreativeWork? creativeModeWork,
       final int currentWorkIndex}) = _$_AppUser;
 
   factory _AppUser.fromJson(Map<String, dynamic> json) = _$_AppUser.fromJson;
@@ -211,7 +211,7 @@ abstract class _AppUser implements AppUser {
   @override
   List<WorkInProgress> get works;
   @override
-  WorkInProgress? get creativeModeWork;
+  CreativeWork? get creativeModeWork;
   @override
   int get currentWorkIndex;
   @override
