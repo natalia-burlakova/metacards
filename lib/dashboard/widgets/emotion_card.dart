@@ -138,7 +138,6 @@ class _EmotionCardState extends State<EmotionCard> {
                       showDialog(
                         context: context,
                         builder: (_) {
-                          // ignore: prefer_const_constructors
                           return MessageDialog(
                               height: 270,
                               message:

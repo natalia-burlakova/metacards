@@ -7,7 +7,9 @@ import 'package:metacards/general/utils/screen_adapt.dart';
 class WorkItem extends StatelessWidget {
   final int index;
   final Function onDelete;
-  const WorkItem({super.key, this.index = 0, required this.onDelete});
+  final Function onTap;
+  const WorkItem(
+      {super.key, this.index = 0, required this.onDelete, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,15 @@ class WorkItem extends StatelessWidget {
                 '${index + 1}. ',
                 style: AppTextStyles.normal18,
               ),
-              Expanded(
-                child: Text(
-                  cnst.AppData.appUser!.works[index].intention,
-                  style: AppTextStyles.normal18,
+              InkWell(
+                onTap: () {
+                  onTap();
+                },
+                child: Expanded(
+                  child: Text(
+                    cnst.AppData.appUser!.works[index].intention,
+                    style: AppTextStyles.normal18,
+                  ),
                 ),
               ),
               InkWell(

@@ -153,3 +153,5 @@ final GlobalKey<ScaffoldState> globalKey = GlobalKey();
 enum EmotionState { intensionAbsent, generateList, next, verbsNotEnd, end }
 
 enum VerbState { generateList, next, end }
+
+enum WorkState { notStarted, inProgressFullList, inProgressExistplace }

@@ -37,17 +37,34 @@ class _WorkListState extends State<WorkList> {
                     cnst.AppData.appUser!.works.length,
                     (index) => WorkItem(
                         index: index,
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              builder: (dialogContext) {
+                                return cnst.AppData.workMethods!
+                                    .getWorkDeleteDialog(
+                                  dialogContext,
+                                  index,
+                                  () {
+                                    Navigator.pop(dialogContext);
+                                    setState(() {});
+                                  },
+                                );
+                              });
+                        },
                         onDelete: () {
                           showDialog(
                               context: context,
                               builder: (dialogContext) {
                                 return cnst.AppData.workMethods!
                                     .getWorkDeleteDialog(
-                                        dialogContext,
-                                        cnst.AppData.appUser!.works[index]
-                                            .intention, () {
-                                  setState(() {});
-                                });
+                                  dialogContext,
+                                  index,
+                                  () {
+                                    Navigator.pop(dialogContext);
+                                    setState(() {});
+                                  },
+                                );
                               });
                         }),
                   ),

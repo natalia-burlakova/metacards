@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/general/ui/message_dialog.dart';
 import 'package:metacards/data/constants.dart' as cnst;
+import 'package:metacards/general/ui/yesno_dialog.dart';
+import 'package:metacards/general/utils/screen_adapt.dart';
 
 class CardsAppBar extends StatelessWidget {
   final String intention;
@@ -62,67 +64,67 @@ class CardsAppBar extends StatelessWidget {
                 )
               : Text(titel),
         ),
-        if (cnst.AppData.workMethods!.canDeleteWork())
-          Row(
-            children: [
+        Row(
+          children: [
+            if (cnst.AppData.workMethods!.canAddWork())
               InkWell(
                 onTap: () {
-                  if (cnst.AppData.workMethods!.canDeleteWork()) {
-                    showDialog(
-                        context: context,
-                        builder: (dialogContext) {
-                          return cnst.AppData.workMethods!.getWorkDeleteDialog(
-                            dialogContext,
-                            intention,
-                            () {
-                              Navigator.pop(dialogContext);
-
-                              if (onUpdate != null) {
-                                onUpdate!();
-                              }
-                              while (GoRouter.of(context).location != "/") {
-                                GoRouter.of(context).pop(true);
-                              }
-                            },
-                          );
-                        });
-                  }
+                  final text = cnst.AppData.workMethods!.getWorkAddText();
+                  showDialog(
+                      context: context,
+                      builder: (dialogContext) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: YesNoDialog(
+                                height: text.isEmpty ? 285.0.a : 340.0.a,
+                                title:
+                                    'Вы точно хотите прекратить работу по данному намерению "$intention" и начать новую? Текущая работа будет сохранена. $text',
+                                yesFunction: () {
+                                  Navigator.pop(dialogContext);
+                                  context.push('/intention_add');
+                                },
+                              ),
+                            )
+                          ],
+                        );
+                      });
                 },
                 child: const Icon(
                   Icons.add,
                   size: 40,
                 ),
               ),
+            if (cnst.AppData.workMethods!.canDeleteWork())
               InkWell(
                 onTap: () {
-                  if (cnst.AppData.workMethods!.canDeleteWork()) {
-                    showDialog(
-                        context: context,
-                        builder: (dialogContext) {
-                          return cnst.AppData.workMethods!.getWorkDeleteDialog(
-                            dialogContext,
-                            intention,
-                            () {
-                              Navigator.pop(dialogContext);
+                  showDialog(
+                      context: context,
+                      builder: (dialogContext) {
+                        return cnst.AppData.workMethods!.getWorkDeleteDialog(
+                          dialogContext,
+                          cnst.AppData.appUser?.currentWorkIndex ?? 0,
+                          () {
+                            Navigator.pop(dialogContext);
 
-                              if (onUpdate != null) {
-                                onUpdate!();
-                              }
-                              while (GoRouter.of(context).location != "/") {
-                                GoRouter.of(context).pop(true);
-                              }
-                            },
-                          );
-                        });
-                  }
+                            if (onUpdate != null) {
+                              onUpdate!();
+                            }
+                            while (GoRouter.of(context).location != "/") {
+                              GoRouter.of(context).pop(true);
+                            }
+                          },
+                        );
+                      });
                 },
                 child: const Icon(
                   Icons.delete_outline,
                   size: 40,
                 ),
               ),
-            ],
-          ),
+          ],
+        ),
       ],
     );
   }

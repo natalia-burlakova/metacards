@@ -83,6 +83,9 @@ class _PageGeneralState extends State<PageGeneral> {
                   : 'Творческий режим',
               onUpdate: () {
                 setState(() {});
+                if (widget.onUpdate != null) {
+              widget.onUpdate!();
+            }
               },
             )),
         backgroundColor:

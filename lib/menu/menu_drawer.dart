@@ -175,7 +175,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'Версия 1.0.2',
+                    'Версия 1.1.0',
                     style: AppTextStyles.medium18.copyWith(color: Colors.white),
                   ),
                 ],

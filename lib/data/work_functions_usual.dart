@@ -30,6 +30,9 @@ class UsualWorkMethods extends IWorkMethods {
     if (cnst.AppData.appUser?.works.isNotEmpty ?? false) {
       works.addAll(cnst.AppData.appUser!.works);
     }
+    if (works.length >= 3) {
+      works.removeAt(0);
+    }
     works.add(work);
     AppUser appUser = AppUser(works: cnst.AppData.appUser?.works ?? []);
     appUser = AppUser(currentWorkIndex: works.length - 1, works: works);
@@ -59,7 +62,7 @@ class UsualWorkMethods extends IWorkMethods {
     final works = <WorkInProgress>[];
     works.addAll(AppData.appUser!.works);
     works.removeAt(workIndex);
-    final user = AppUser(works: works);
+    final user = AppUser(currentWorkIndex: works.length - 1, works: works);
     cnst.AppData.appUser = user;
     final appData = json.encode(cnst.AppData.appUser!.toJson());
     print(appData);
@@ -213,38 +216,41 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   void nextVerbSet() {
-    final work = cnst
-        .AppData.appUser?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
-    if (work != null && work.emotions.isNotEmpty) {
-      final emotion = work.emotions[work.currentEmotionIndex];
+    if (cnst.AppData.appUser != null &&
+        cnst.AppData.appUser!.works.isNotEmpty) {
+      final work = cnst
+          .AppData.appUser?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
+      if (work != null && work.emotions.isNotEmpty) {
+        final emotion = work.emotions[work.currentEmotionIndex];
 
-      EmotionInProgress emotionWithVerbs = EmotionInProgress(
-          emotionId: emotion.emotionId,
-          verbIds: emotion.verbIds,
-          currentVerbIndex: emotion.currentVerbIndex + 1);
+        EmotionInProgress emotionWithVerbs = EmotionInProgress(
+            emotionId: emotion.emotionId,
+            verbIds: emotion.verbIds,
+            currentVerbIndex: emotion.currentVerbIndex + 1);
 
-      List<EmotionInProgress> emotions = [];
-      emotions.addAll(work.emotions);
-      emotions[cnst
-          .AppData
-          .appUser!
-          .works[cnst.AppData.appUser!.currentWorkIndex]
-          .currentEmotionIndex] = emotionWithVerbs;
-      final works = <WorkInProgress>[];
-      works.addAll(AppData.appUser!.works);
-      works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
-          intention: cnst.AppData.appUser!
-              .works[cnst.AppData.appUser!.currentWorkIndex].intention,
-          emotions: emotions,
-          currentEmotionIndex: cnst
-              .AppData
-              .appUser!
-              .works[cnst.AppData.appUser!.currentWorkIndex]
-              .currentEmotionIndex);
-      cnst.AppData.appUser = AppUser(works: works);
-      final appData = json.encode(cnst.AppData.appUser!.toJson());
-      print(appData);
-      storage.write(key: 'app_data', value: appData);
+        List<EmotionInProgress> emotions = [];
+        emotions.addAll(work.emotions);
+        emotions[cnst
+            .AppData
+            .appUser!
+            .works[cnst.AppData.appUser!.currentWorkIndex]
+            .currentEmotionIndex] = emotionWithVerbs;
+        final works = <WorkInProgress>[];
+        works.addAll(AppData.appUser!.works);
+        works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
+            intention: cnst.AppData.appUser!
+                .works[cnst.AppData.appUser!.currentWorkIndex].intention,
+            emotions: emotions,
+            currentEmotionIndex: cnst
+                .AppData
+                .appUser!
+                .works[cnst.AppData.appUser!.currentWorkIndex]
+                .currentEmotionIndex);
+        cnst.AppData.appUser = AppUser(works: works);
+        final appData = json.encode(cnst.AppData.appUser!.toJson());
+        print(appData);
+        storage.write(key: 'app_data', value: appData);
+      }
     }
   }
 
@@ -284,7 +290,7 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   Widget getWorkDeleteDialog(
-      BuildContext dialogContext, String text, Function() endFunc) {
+      BuildContext dialogContext, int index, Function() endFunc) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -292,9 +298,9 @@ class UsualWorkMethods extends IWorkMethods {
           child: YesNoDialog(
             height: 210.0.a,
             title:
-                'Вы точно хотите полностью удалить работу по данному намерению "$text"?',
+                'Вы точно хотите полностью удалить работу по данному намерению "${AppData.appUser!.works[index].intention}"?',
             yesFunction: () {
-              deleteWork(cnst.AppData.appUser!.currentWorkIndex);
+              deleteWork(index);
               endFunc();
             },
           ),
@@ -481,5 +487,63 @@ class UsualWorkMethods extends IWorkMethods {
     return emotion == null || emotion.verbIds.isEmpty
         ? cnst.AssetPaths.verbsFront
         : cnst.AssetPaths.verbsBack;
+  }
+
+  @override
+  bool canAddWork() {
+    final work = cnst.AppData.workMethods!.getCurrentWork();
+    if (work == null) return false;
+    return true;
+  }
+
+  @override
+  String getWorkAddText() {
+    var textList = "";
+    if ((cnst.AppData.appUser?.works.length ?? 0) == 3) {
+      textList = "Самая старая несохраненная работа будет удалена!";
+    }
+    return textList;
+  }
+
+  @override
+  WorkState getCurrentWorkState() {
+    final work = cnst.AppData.workMethods!.getCurrentWork();
+    if (work == null || work.intention.isEmpty) {
+      return WorkState.notStarted;
+    } else {
+      return (cnst.AppData.appUser?.works.length ?? 0) < 3
+          ? WorkState.inProgressExistplace
+          : WorkState.inProgressFullList;
+    }
+  }
+
+  @override
+  Widget getWorkSelectDialog(
+      BuildContext dialogContext, int index, Function() endFunc) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+          child: YesNoDialog(
+            height: 210.0.a,
+            title:
+                'Вы хотите вернуться к работе "${AppData.appUser!.works[index].intention}"?',
+            yesFunction: () {
+              returnToWork(index);
+              endFunc();
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  void returnToWork(int index) {
+    cnst.AppData.appUser =
+        cnst.AppData.appUser!.copyWith(currentWorkIndex: index);
+    final appData = json.encode(cnst.AppData.appUser!.toJson());
+    print(appData);
+    storage.write(key: 'app_data', value: appData);
   }
 }

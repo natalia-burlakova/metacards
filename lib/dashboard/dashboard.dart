@@ -8,6 +8,7 @@ import 'package:metacards/data/constants.dart' as cnst;
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/ui/page_general.dart';
 import 'package:metacards/general/utils/screen_adapt.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -59,7 +60,7 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'шаблон для работы',
+                          AppLocalizations.of(context)!.workTemplateTitle,
                           style: AppTextStyles.normal21,
                         ),
                       ],

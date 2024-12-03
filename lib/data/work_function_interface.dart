@@ -16,9 +16,15 @@ abstract class IWorkMethods {
 
   String getRestEmotionsCount();
 
+  bool canAddWork();
+
   void addWork(WorkInProgress work);
 
   void startWorkAgain(int index);
+
+  void returnToWork(int index);
+
+  bool canDeleteWork();
 
   void deleteWork(int workIndex);
 
@@ -141,9 +147,14 @@ abstract class IWorkMethods {
   void prevVerbSet();
 
   Widget getWorkDeleteDialog(
-      BuildContext dialogContext, String text, Function() endFunc);
+      BuildContext dialogContext, int index, Function() endFunc);
 
-  bool canDeleteWork();
+  Widget getWorkSelectDialog(
+      BuildContext dialogContext, int index, Function() endFunc);
+
+  String getWorkAddText();
 
   String getVerbBackground();
+
+  WorkState getCurrentWorkState();
 }

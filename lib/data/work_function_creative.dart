@@ -96,13 +96,11 @@ class CreativeWorkMethods extends IWorkMethods {
   }
 
   @override
-  void startWorkAgain(int index) {
-    // TODO: implement startWorkAgain
-  }
+  void startWorkAgain(int index) {}
 
   @override
   Widget getWorkDeleteDialog(
-      BuildContext dialogContext, String text, Function() endFunc) {
+      BuildContext dialogContext, int index, Function() endFunc) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -137,7 +135,7 @@ class CreativeWorkMethods extends IWorkMethods {
 
   @override
   bool canDeleteWork() {
-    return true;
+    return false;
   }
 
   @override
@@ -246,4 +244,28 @@ class CreativeWorkMethods extends IWorkMethods {
       children: titleList,
     );
   }
+
+  @override
+  bool canAddWork() {
+    return false;
+  }
+
+  @override
+  String getWorkAddText() {
+    return "";
+  }
+
+  @override
+  WorkState getCurrentWorkState() {
+    return WorkState.notStarted;
+  }
+
+  @override
+  Widget getWorkSelectDialog(
+      BuildContext dialogContext, int index, Function() endFunc) {
+    return Container();
+  }
+
+  @override
+  void returnToWork(int index) {}
 }
