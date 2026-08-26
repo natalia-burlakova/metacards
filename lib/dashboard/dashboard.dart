@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/dashboard/widgets/emotion_card.dart';
@@ -38,8 +39,16 @@ class _DashboardState extends State<Dashboard> {
           setState(() {});
         }
       },
-      onError: (error) {},
+      onError: (error) {
+        if (kDebugMode) print('updateStream error: $error');
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    _updateSubscription?.cancel();
+    super.dispose();
   }
 
   @override

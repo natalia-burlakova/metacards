@@ -213,6 +213,7 @@ class _WorkTemplateState extends State<WorkTemplate> {
             );
           },
         ).then((value) {
+          if (!mounted) return;
           while (GoRouterState.of(context).uri.path != "/") {
             GoRouter.of(context).pop(true);
           }

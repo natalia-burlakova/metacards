@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/constants.dart';
-import 'package:metacards/data/models/app_user.dart';
 import 'package:metacards/data/models/emotion_in_progress.dart';
 import 'package:metacards/data/models/verb.dart';
 import 'package:metacards/data/models/work_in_progress.dart';
@@ -61,52 +60,66 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   void deleteWork(int workIndex) {
-    final works = <WorkInProgress>[];
-    works.addAll(cnst.AppInitializer.appData.appUser!.works);
-    works.removeAt(workIndex);
+    if (cnst.AppInitializer.appData.appUser?.works.isNotEmpty ?? false) {
+      final works = <WorkInProgress>[];
+      works.addAll(cnst.AppInitializer.appData.appUser!.works);
+      works.removeAt(workIndex);
 
-    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
-        .copyWith(currentWorkIndex: 0, works: works);
-    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
-    if (kDebugMode) print(appData);
-    storage.write(key: 'app_data', value: appData);
-    cnst.AppInitializer.appData.updateController.add(true);
+      cnst.AppInitializer.appData.appUser = cnst
+          .AppInitializer
+          .appData
+          .appUser!
+          .copyWith(currentWorkIndex: 0, works: works);
+      final appData = json.encode(
+        cnst.AppInitializer.appData.appUser!.toJson(),
+      );
+      if (kDebugMode) print(appData);
+      storage.write(key: 'app_data', value: appData);
+      cnst.AppInitializer.appData.updateController.add(true);
+    }
   }
 
   @override
   void generateEmotionsList() {
-    var rnd = Random();
-    final emotionsCount = rnd.nextInt(20);
-    final emotions = <EmotionInProgress>[];
-    for (var i = 0; i < emotionsCount; i++) {
-      var id = -1;
-      id = cnst
+    if (cnst.AppInitializer.appData.appUser?.works.isNotEmpty ?? false) {
+      var rnd = Random();
+      final emotionsCount = rnd.nextInt(20);
+      final emotions = <EmotionInProgress>[];
+      for (var i = 0; i < emotionsCount; i++) {
+        var id = -1;
+        id = cnst
+            .AppInitializer
+            .appData
+            .metacards!
+            .emotions[Random().nextInt(
+              cnst.AppInitializer.appData.metacards!.emotions.length,
+            )]
+            .id;
+        emotions.add(EmotionInProgress(emotionId: id));
+      }
+      final works = <WorkInProgress>[];
+      works.addAll(cnst.AppInitializer.appData.appUser!.works);
+      works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
+          WorkInProgress(
+            intention: cnst
+                .AppInitializer
+                .appData
+                .appUser!
+                .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                .intention,
+            emotions: emotions,
+          );
+      cnst.AppInitializer.appData.appUser = cnst
           .AppInitializer
           .appData
-          .metacards!
-          .emotions[Random().nextInt(
-            cnst.AppInitializer.appData.metacards!.emotions.length,
-          )]
-          .id;
-      emotions.add(EmotionInProgress(emotionId: id));
+          .appUser!
+          .copyWith(works: works);
+      final appData = json.encode(
+        cnst.AppInitializer.appData.appUser!.toJson(),
+      );
+      if (kDebugMode) print(appData);
+      storage.write(key: 'app_data', value: appData);
     }
-    final works = <WorkInProgress>[];
-    works.addAll(cnst.AppInitializer.appData.appUser!.works);
-    works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
-        WorkInProgress(
-          intention: cnst
-              .AppInitializer
-              .appData
-              .appUser!
-              .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
-              .intention,
-          emotions: emotions,
-        );
-    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
-        .copyWith(works: works);
-    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
-    if (kDebugMode) print(appData);
-    storage.write(key: 'app_data', value: appData);
   }
 
   @override
@@ -201,11 +214,14 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   void generateVerbsList() {
-    final work = cnst
-        .AppInitializer
-        .appData
-        .appUser
-        ?.works[cnst.AppInitializer.appData.appUser?.currentWorkIndex ?? 0];
+    final work = (cnst.AppInitializer.appData.appUser?.works.isEmpty ?? true)
+        ? null
+        : cnst
+              .AppInitializer
+              .appData
+              .appUser
+              ?.works[cnst.AppInitializer.appData.appUser?.currentWorkIndex ??
+                  0];
     if (work != null && work.emotions.isNotEmpty) {
       final emotion = work.emotions[work.currentEmotionIndex];
       var rnd = Random();
@@ -328,6 +344,10 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   void prevVerbSet() {
+    if (cnst.AppInitializer.appData.appUser == null ||
+        cnst.AppInitializer.appData.appUser!.works.isEmpty) {
+      return;
+    }
     final work = cnst
         .AppInitializer
         .appData

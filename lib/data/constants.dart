@@ -50,7 +50,7 @@ class AppData extends ChangeNotifier {
       ? usualWorkMethods
       : creativeWorkMethods;
 
-  Future<bool> initialize(context) async {
+  Future<bool> initialize(BuildContext context) async {
     await loadMetacardsForLocale(
       context,
       AppInitializer.localeNotifier.value.languageCode,
@@ -71,7 +71,10 @@ class AppData extends ChangeNotifier {
     return true;
   }
 
-  Future<void> loadMetacardsForLocale(context, String languageCode) async {
+  Future<void> loadMetacardsForLocale(
+    BuildContext context,
+    String languageCode,
+  ) async {
     final dataLocale = supportedDataLocales.contains(languageCode)
         ? languageCode
         : 'ru';
@@ -81,8 +84,9 @@ class AppData extends ChangeNotifier {
     metacards = MetaCards.fromJson(jsonDecode(cardsRaw));
   }
 
-  Future<void> setLocale(context, String languageCode) async {
+  Future<void> setLocale(BuildContext context, String languageCode) async {
     await storage.write(key: 'locale_code', value: languageCode);
+    if (!context.mounted) return;
     AppInitializer.localeNotifier.value = Locale(languageCode);
     await loadMetacardsForLocale(context, languageCode);
     _updateController.add(true);

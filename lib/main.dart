@@ -11,7 +11,12 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  final storedLocaleCode = await storage.read(key: 'locale_code');
+  String? storedLocaleCode;
+  try {
+    storedLocaleCode = await storage.read(key: 'locale_code');
+  } catch (_) {
+    storedLocaleCode = null;
+  }
   if (storedLocaleCode != null) {
     AppInitializer.localeNotifier.value = Locale(storedLocaleCode);
   }
