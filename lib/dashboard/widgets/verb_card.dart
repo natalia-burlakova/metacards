@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/constants.dart' as cnst;
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/ui/message_dialog.dart';
@@ -29,7 +30,7 @@ class _VerbCardState extends State<VerbCard> {
               nextVerb();
             } else {
               //Left Swipe
-              cnst.AppData.workMethods!.prevVerbSet();
+              cnst.AppInitializer.appData.workMethods!.prevVerbSet();
               if (widget.onUpdate != null) {
                 widget.onUpdate!();
               }
@@ -39,7 +40,7 @@ class _VerbCardState extends State<VerbCard> {
             nextVerb();
           },
           child: Image.asset(
-            cnst.AppData.workMethods!.getVerbBackground(),
+            cnst.AppInitializer.appData.workMethods!.getVerbBackground(),
             fit: BoxFit.fill,
             width: MediaQuery.of(context).size.width,
             height: height,
@@ -54,7 +55,8 @@ class _VerbCardState extends State<VerbCard> {
           alignment: Alignment.center,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: cnst.AppData.workMethods!.getVerbTitle(context),
+            children:
+                cnst.AppInitializer.appData.workMethods!.getVerbTitle(context),
           ),
         ),
       ),
@@ -75,19 +77,20 @@ class _VerbCardState extends State<VerbCard> {
                     child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          cnst.AppData.workMethods!.getRestVerbCount(),
+                          cnst.AppInitializer.appData.workMethods!
+                              .getRestVerbCount(),
                           style: AppTextStyles.medium42,
                         ))),
               ],
             ),
           )),
-      if (cnst.AppData.workMethods!.canPrevVerbTap())
+      if (cnst.AppInitializer.appData.workMethods!.canPrevVerbTap())
         Positioned(
             bottom: 2.0.a,
             left: 2.0.a,
             child: InkWell(
               onTap: () {
-                cnst.AppData.workMethods!.prevVerbSet();
+                cnst.AppInitializer.appData.workMethods!.prevVerbSet();
                 if (widget.onUpdate != null) {
                   widget.onUpdate!();
                 }
@@ -101,10 +104,11 @@ class _VerbCardState extends State<VerbCard> {
   }
 
   void nextVerb() {
-    final verbState = cnst.AppData.workMethods!.canNextVerbTap();
+    final l10n = AppLocalizations.of(context)!;
+    final verbState = cnst.AppInitializer.appData.workMethods!.canNextVerbTap();
     switch (verbState) {
       case cnst.VerbState.generateList:
-        cnst.AppData.workMethods!.generateVerbsList();
+        cnst.AppInitializer.appData.workMethods!.generateVerbsList();
         if (widget.onUpdate != null) {
           widget.onUpdate!();
         }
@@ -116,8 +120,7 @@ class _VerbCardState extends State<VerbCard> {
           builder: (_) {
             return MessageDialog(
               height: 250,
-              message:
-                  'Вы проработали все глаголы для этой эмоции! Переходите к следующей.',
+              message: l10n.workAllVerbsDoneMessage,
               child: Column(
                 children: [
                   const Icon(
@@ -125,7 +128,7 @@ class _VerbCardState extends State<VerbCard> {
                     size: 50,
                   ),
                   Text(
-                    'Поздравляем!',
+                    l10n.workCongratulations,
                     style: AppTextStyles.bold18,
                   )
                 ],
@@ -135,7 +138,7 @@ class _VerbCardState extends State<VerbCard> {
         );
         break;
       default:
-        cnst.AppData.workMethods!.nextVerbSet();
+        cnst.AppInitializer.appData.workMethods!.nextVerbSet();
         if (widget.onUpdate != null) {
           widget.onUpdate!();
         }

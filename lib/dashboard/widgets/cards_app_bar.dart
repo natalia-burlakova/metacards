@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/general/ui/message_dialog.dart';
 import 'package:metacards/data/constants.dart' as cnst;
@@ -20,6 +21,7 @@ class CardsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -42,7 +44,7 @@ class CardsAppBar extends StatelessWidget {
                     }
                   },
                   child: Row(children: [
-                    if (intention.isEmpty) const Text('Намерение'),
+                    if (intention.isEmpty) Text(l10n.intentionLabel),
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 5.0),
@@ -66,10 +68,15 @@ class CardsAppBar extends StatelessWidget {
         ),
         Row(
           children: [
-            if (cnst.AppData.workMethods!.canAddWork())
+            if (cnst.AppInitializer.appData.workMethods!.canAddWork())
               InkWell(
                 onTap: () {
-                  final text = cnst.AppData.workMethods!.getWorkAddText();
+                  final willDeleteOldest = cnst
+                      .AppInitializer.appData.workMethods!
+                      .willDeleteOldestWork();
+                  final title = willDeleteOldest
+                      ? '${l10n.cardsAppBarStopIntentionConfirm(intention)} ${l10n.workOldestWillBeDeleted}'
+                      : l10n.cardsAppBarStopIntentionConfirm(intention);
                   showDialog(
                       context: context,
                       builder: (dialogContext) {
@@ -78,9 +85,8 @@ class CardsAppBar extends StatelessWidget {
                           children: [
                             Center(
                               child: YesNoDialog(
-                                height: text.isEmpty ? 285.0.a : 340.0.a,
-                                title:
-                                    'Вы точно хотите прекратить работу по данному намерению "$intention" и начать новую? Текущая работа будет сохранена. $text',
+                                height: willDeleteOldest ? 340.0.a : 285.0.a,
+                                title: title,
                                 yesFunction: () {
                                   Navigator.pop(dialogContext);
                                   context.push('/intention_add');
@@ -96,22 +102,25 @@ class CardsAppBar extends StatelessWidget {
                   size: 40,
                 ),
               ),
-            if (cnst.AppData.workMethods!.canDeleteWork())
+            if (cnst.AppInitializer.appData.workMethods!.canDeleteWork())
               InkWell(
                 onTap: () {
                   showDialog(
                       context: context,
                       builder: (dialogContext) {
-                        return cnst.AppData.workMethods!.getWorkDeleteDialog(
+                        return cnst.AppInitializer.appData.workMethods!
+                            .getWorkDeleteDialog(
                           dialogContext,
-                          cnst.AppData.appUser?.currentWorkIndex ?? 0,
+                          cnst.AppInitializer.appData.appUser
+                                  ?.currentWorkIndex ??
+                              0,
                           () {
                             Navigator.pop(dialogContext);
 
                             if (onUpdate != null) {
                               onUpdate!();
                             }
-                            while (GoRouter.of(context).location != "/") {
+                            while (GoRouterState.of(context).uri.path != "/") {
                               GoRouter.of(context).pop(true);
                             }
                           },

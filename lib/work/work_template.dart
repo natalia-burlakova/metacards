@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/data/constants.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
@@ -17,6 +18,7 @@ class WorkTemplate extends StatefulWidget {
 class _WorkTemplateState extends State<WorkTemplate> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PageGeneral(
         canBack: true,
         body: Padding(
@@ -39,23 +41,23 @@ class _WorkTemplateState extends State<WorkTemplate> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '1)  ${AppData.workMethods!.getCurrentEmotionText()}',
+                      '1)  ${AppInitializer.appData.workMethods!.getCurrentEmotionText()}',
                       style: AppTextStyles.bold16,
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 50.0.a),
-                      child: Text('''я тебя вижу,
-я тебя слышу,
-я тебя чувствую.''', style: AppTextStyles.normal16),
+                      child: Text(l10n.workTemplateRefrain,
+                          style: AppTextStyles.normal16),
                     ),
-                    Text('Ты мне необходима для того, чтобы ',
+                    Text(l10n.workTemplatePurpose,
                         style: AppTextStyles.normal16),
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 50.0.a,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (AppData.workMethods!.canPrevVerbTap())
+                          if (AppInitializer.appData.workMethods!
+                              .canPrevVerbTap())
                             InkWell(
                               onTap: () {
                                 prevVerb();
@@ -65,7 +67,8 @@ class _WorkTemplateState extends State<WorkTemplate> {
                                 size: 40.0.a,
                               ),
                             ),
-                          AppData.workMethods!.getCurrentVerbTitleWidget(),
+                          AppInitializer.appData.workMethods!
+                              .getCurrentVerbTitleWidget(),
                           InkWell(
                             onTap: () {
                               nextVerb();
@@ -80,14 +83,14 @@ class _WorkTemplateState extends State<WorkTemplate> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 30.0.a),
-                      child: Text('... прислушайтесь к себе и',
+                      child: Text(l10n.workTemplateListen,
                           style: AppTextStyles.normal16),
                     ),
-                    Text('осознайте для чего эта эмоция',
+                    Text(l10n.workTemplateRealize,
                         style: AppTextStyles.normal16),
                     Padding(
                       padding: EdgeInsets.only(left: 50.0.a),
-                      child: Text('нужна именно вам.',
+                      child: Text(l10n.workTemplateNeedIt,
                           style: AppTextStyles.normal16),
                     ),
                     SizedBox(
@@ -103,16 +106,18 @@ class _WorkTemplateState extends State<WorkTemplate> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Заходите еще глубже',
+                            Text(l10n.workTemplateStep2Intro1,
                                 style: AppTextStyles.normal16),
-                            Text('с помощью вопросов',
+                            Text(l10n.workTemplateStep2Intro2,
                                 style: AppTextStyles.normal16),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('ДЛЯ ЧЕГО?', style: AppTextStyles.bold16),
-                                Text(' и ', style: AppTextStyles.normal16),
-                                Text('ДАЖЕ ЕСЛИ...',
+                                Text(l10n.workTemplateQuestionWhy,
+                                    style: AppTextStyles.bold16),
+                                Text(l10n.workTemplateAnd,
+                                    style: AppTextStyles.normal16),
+                                Text(l10n.workTemplateQuestionEvenIf,
                                     style: AppTextStyles.bold16),
                               ],
                             ),
@@ -130,11 +135,8 @@ class _WorkTemplateState extends State<WorkTemplate> {
                             width: 25.0.a,
                             child: Text('3) ', style: AppTextStyles.bold16),
                           ),
-                          Text('''Спасибо тебе, эмоция,
-за этот опыт, и спасибо
-всем людям, которые
-научили меня тебя
-чувствовать!''', style: AppTextStyles.normal16),
+                          Text(l10n.workTemplateThanks,
+                              style: AppTextStyles.normal16),
                         ]),
                     SizedBox(
                       height: 10.0.a,
@@ -146,8 +148,8 @@ class _WorkTemplateState extends State<WorkTemplate> {
                           width: 25.0.a,
                           child: Text('4) ', style: AppTextStyles.bold16),
                         ),
-                        Text('''Я принимаю тебя и даю тебе
-место в своем теле.''', style: AppTextStyles.normal16),
+                        Text(l10n.workTemplateAccept,
+                            style: AppTextStyles.normal16),
                       ],
                     ),
                     SizedBox(
@@ -155,17 +157,17 @@ class _WorkTemplateState extends State<WorkTemplate> {
                     ),
                     Center(
                         child: Button(
-                            label: "Следующий глагол",
+                            label: l10n.workTemplateNextVerbButton,
                             onTap: () {
                               nextVerb();
                             })),
                     SizedBox(
                       height: 10.0.a,
                     ),
-                    if (AppData.workMethods!.canPrevVerbTap())
+                    if (AppInitializer.appData.workMethods!.canPrevVerbTap())
                       Center(
                           child: Button(
-                              label: "Предыдущий глагол",
+                              label: l10n.workTemplatePrevVerbButton,
                               onTap: () {
                                 prevVerb();
                               }))
@@ -176,15 +178,16 @@ class _WorkTemplateState extends State<WorkTemplate> {
   }
 
   void prevVerb() {
-    AppData.workMethods!.prevVerbSet();
+    AppInitializer.appData.workMethods!.prevVerbSet();
     setState(() {});
   }
 
   void nextVerb() {
-    final verbState = AppData.workMethods!.canNextVerbTap();
+    final l10n = AppLocalizations.of(context)!;
+    final verbState = AppInitializer.appData.workMethods!.canNextVerbTap();
     switch (verbState) {
       case VerbState.generateList:
-        AppData.workMethods!.generateVerbsList();
+        AppInitializer.appData.workMethods!.generateVerbsList();
         setState(() {});
         break;
       case VerbState.end:
@@ -194,8 +197,7 @@ class _WorkTemplateState extends State<WorkTemplate> {
           builder: (_) {
             return MessageDialog(
               height: 250,
-              message:
-                  'Вы проработали все глаголы для этой эмоции! Переходите к следующей.',
+              message: l10n.workAllVerbsDoneMessage,
               child: Column(
                 children: [
                   const Icon(
@@ -203,7 +205,7 @@ class _WorkTemplateState extends State<WorkTemplate> {
                     size: 50,
                   ),
                   Text(
-                    'Поздравляем!',
+                    l10n.workCongratulations,
                     style: AppTextStyles.bold18,
                   )
                 ],
@@ -211,13 +213,13 @@ class _WorkTemplateState extends State<WorkTemplate> {
             );
           },
         ).then((value) {
-          while (GoRouter.of(context).location != "/") {
+          while (GoRouterState.of(context).uri.path != "/") {
             GoRouter.of(context).pop(true);
           }
         });
         break;
       default:
-        AppData.workMethods!.nextVerbSet();
+        AppInitializer.appData.workMethods!.nextVerbSet();
         setState(() {});
     }
   }

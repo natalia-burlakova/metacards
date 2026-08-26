@@ -18,7 +18,7 @@ class Button extends StatelessWidget {
   final double height;
 
   const Button({
-    Key? key,
+    super.key,
     this.label = '',
     this.labelStyle,
     this.color,
@@ -32,7 +32,7 @@ class Button extends StatelessWidget {
     this.horizontalPadding = 15.0,
     this.width,
     this.height = 60,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class Button extends StatelessWidget {
       elevation: withShadow ? 5 : 0,
       child: InkWell(
         onTap: onTap,
-        highlightColor: currentColor?.withOpacity(0.2) ?? AppColor.buttonColor,
+        highlightColor: currentColor?.withAlpha(51) ?? AppColor.buttonColor,
         borderRadius: bRadius,
         hoverColor: AppColor.greyLight,
         child: Container(

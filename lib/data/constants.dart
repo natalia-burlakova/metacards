@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -14,67 +16,102 @@ import 'package:metacards/menu/pages/about_emotions.dart';
 import 'package:metacards/menu/pages/about_school.dart';
 import 'package:metacards/menu/pages/contacts.dart';
 import 'package:metacards/menu/pages/donate.dart';
+import 'package:metacards/menu/pages/settings.dart';
 import 'package:metacards/menu/pages/work_list.dart';
 import 'package:metacards/work/intention_add.dart';
 import 'package:metacards/work/work_template.dart';
 import 'models/app_user.dart';
 
-class AppData {
-  const AppData._();
+class AppInitializer {
+  AppInitializer._();
+  static AppData appData = AppData();
+  static final ValueNotifier<Locale> localeNotifier = ValueNotifier(
+    const Locale(AppData.defaultLocale),
+  );
+}
 
-  static AppUser? appUser;
-  static MetaCards? metacards;
+class AppData extends ChangeNotifier {
+  static const supportedDataLocales = {'ru', 'en', 'sr'};
+  static const defaultLocale = 'ru';
 
-  static UsualWorkMethods usualWorkMethods = UsualWorkMethods();
-  static CreativeWorkMethods creativeWorkMethods = CreativeWorkMethods();
+  AppUser? appUser;
+  MetaCards? metacards;
 
-  static IWorkMethods? get workMethods => appUser?.creativeModeWork == null
+  final UsualWorkMethods usualWorkMethods = UsualWorkMethods();
+  final CreativeWorkMethods creativeWorkMethods = CreativeWorkMethods();
+
+  // Stream for real-time transcripts
+  final StreamController<bool> _updateController =
+      StreamController<bool>.broadcast();
+  Stream<bool> get updateStream => _updateController.stream;
+  StreamController<bool> get updateController => _updateController;
+
+  IWorkMethods? get workMethods => appUser?.creativeModeWork == null
       ? usualWorkMethods
       : creativeWorkMethods;
 
-  static Future<bool> getStaticData(context) async {
-    String cardsRaw =
-        await DefaultAssetBundle.of(context).loadString("assets/data.json");
-    metacards = MetaCards.fromJson(jsonDecode(cardsRaw));
+  Future<bool> initialize(context) async {
+    await loadMetacardsForLocale(
+      context,
+      AppInitializer.localeNotifier.value.languageCode,
+    );
 
     final appDataRaw = await storage.read(key: 'app_data');
     if (appDataRaw != null) {
       isFirstStart = false;
-      AppData.appUser = AppUser.fromJson(json.decode(appDataRaw));
+      appUser = AppUser.fromJson(json.decode(appDataRaw));
     } else {
       //create user for next time
-      AppData.appUser = AppUser();
+      appUser = AppUser();
       await storage.write(
-          key: 'app_data', value: json.encode(AppData.appUser!.toJson()));
+        key: 'app_data',
+        value: json.encode(appUser!.toJson()),
+      );
     }
     return true;
   }
 
-  static void creativeModeTurnOn() {
-    final work = CreativeWork(
-        emotions: [
-          AppData.metacards!
-              .emotions[Random().nextInt(AppData.metacards!.emotions.length)].id
-        ],
-        currentEmotionIndex: 0,
-        verbs: [
-          AppData.metacards!
-              .verbs[Random().nextInt(AppData.metacards!.verbs.length)].id
-        ],
-        currentVerbIndex: 0);
-    AppUser appUser = AppData.appUser!.copyWith(creativeModeWork: work);
-    AppData.appUser = appUser;
-    final appData = json.encode(AppData.appUser!.toJson());
-    print(appData);
-    storage.write(key: 'app_data', value: appData);
+  Future<void> loadMetacardsForLocale(context, String languageCode) async {
+    final dataLocale = supportedDataLocales.contains(languageCode)
+        ? languageCode
+        : 'ru';
+    final cardsRaw = await DefaultAssetBundle.of(
+      context,
+    ).loadString("assets/data_$dataLocale.json");
+    metacards = MetaCards.fromJson(jsonDecode(cardsRaw));
   }
 
-  static void creativeModeTurnOff() {
-    AppUser appUser = AppData.appUser!.copyWith(creativeModeWork: null);
-    AppData.appUser = appUser;
-    final appData = json.encode(AppData.appUser!.toJson());
-    print(appData);
+  Future<void> setLocale(context, String languageCode) async {
+    await storage.write(key: 'locale_code', value: languageCode);
+    AppInitializer.localeNotifier.value = Locale(languageCode);
+    await loadMetacardsForLocale(context, languageCode);
+    _updateController.add(true);
+  }
+
+  void creativeModeTurnOn() {
+    final work = CreativeWork(
+      emotions: [
+        metacards!.emotions[Random().nextInt(metacards!.emotions.length)].id,
+      ],
+      currentEmotionIndex: 0,
+      verbs: [metacards!.verbs[Random().nextInt(metacards!.verbs.length)].id],
+      currentVerbIndex: 0,
+    );
+    AppUser user = appUser!.copyWith(creativeModeWork: work);
+    final appData = json.encode(user.toJson());
+    if (kDebugMode) print(appData);
     storage.write(key: 'app_data', value: appData);
+    appUser = user;
+    _updateController.add(true);
+  }
+
+  void creativeModeTurnOff() {
+    AppUser user = appUser!.copyWith(creativeModeWork: null);
+    final appData = json.encode(user.toJson());
+    if (kDebugMode) print(appData);
+    storage.write(key: 'app_data', value: appData);
+    appUser = user;
+    _updateController.add(true);
   }
 }
 
@@ -103,7 +140,9 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) =>
           const ScreenAdaptation(
-              designSize: Size(375, 812), child: Dashboard()),
+            designSize: Size(375, 812),
+            child: Dashboard(),
+          ),
       routes: [
         GoRoute(
           path: 'intention_add',
@@ -116,25 +155,35 @@ final GoRouter router = GoRouter(
               const WorkTemplate(),
         ),
         GoRoute(
-            path: 'work_list',
-            builder: (BuildContext context, GoRouterState state) =>
-                const WorkList()),
+          path: 'work_list',
+          builder: (BuildContext context, GoRouterState state) =>
+              const WorkList(),
+        ),
         GoRoute(
-            path: 'about_school',
-            builder: (BuildContext context, GoRouterState state) =>
-                const AboutSchool()),
+          path: 'about_school',
+          builder: (BuildContext context, GoRouterState state) =>
+              const AboutSchool(),
+        ),
         GoRoute(
-            path: 'donate',
-            builder: (BuildContext context, GoRouterState state) =>
-                const Donate()),
+          path: 'donate',
+          builder: (BuildContext context, GoRouterState state) =>
+              const Donate(),
+        ),
         GoRoute(
-            path: 'about_emotions',
-            builder: (BuildContext context, GoRouterState state) =>
-                const AboutEmotions()),
+          path: 'about_emotions',
+          builder: (BuildContext context, GoRouterState state) =>
+              const AboutEmotions(),
+        ),
         GoRoute(
-            path: 'contacts',
-            builder: (BuildContext context, GoRouterState state) =>
-                const Contacts()),
+          path: 'contacts',
+          builder: (BuildContext context, GoRouterState state) =>
+              const Contacts(),
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (BuildContext context, GoRouterState state) =>
+              const Settings(),
+        ),
       ],
     ),
   ],
@@ -143,15 +192,12 @@ final GoRouter router = GoRouter(
 const double appBarHeight = 55.0;
 final BorderRadius borderRadius15 = BorderRadius.circular(15.0);
 final RoundedRectangleBorder borderTranspRadius15 = RoundedRectangleBorder(
-    side: const BorderSide(
-      color: Colors.transparent,
-    ),
-    borderRadius: borderRadius15);
+  side: const BorderSide(color: Colors.transparent),
+  borderRadius: borderRadius15,
+);
 
 final GlobalKey<ScaffoldState> globalKey = GlobalKey();
 
 enum EmotionState { intensionAbsent, generateList, next, verbsNotEnd, end }
 
 enum VerbState { generateList, next, end }
-
-enum WorkState { notStarted, inProgressFullList, inProgressExistplace }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/constants.dart';
 import 'package:metacards/data/models/work_in_progress.dart';
 import 'package:metacards/general/const/app_colors.dart';
@@ -25,8 +26,9 @@ class _IntentionAddState extends State<IntentionAdd> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PageGeneral(
-      title: 'Намерение',
+      title: l10n.intentionLabel,
       canBack: true,
       body: Padding(
         padding: EdgeInsets.all(5.0.a),
@@ -47,13 +49,11 @@ class _IntentionAddState extends State<IntentionAdd> {
                 ),
               ),
               Button(
-                  label: "Начать работу",
+                  label: l10n.intentionAddButton,
                   onTap: () {
-                    AppData.workMethods!.addWork(
+                    AppInitializer.appData.workMethods!.addWork(
                         WorkInProgress(intention: _intentionController.text));
-                    while (GoRouter.of(context).location != "/") {
-                      GoRouter.of(context).pop(true);
-                    }
+                    GoRouter.of(context).pop(true);
                   })
             ],
           ),

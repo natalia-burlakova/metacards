@@ -30,16 +30,7 @@ abstract class IWorkMethods {
 
   void generateEmotionsList();
 
-  Emotion? getEmotionById(int emotionId) {
-    if (cnst.AppData.metacards?.emotions.isNotEmpty ?? false) {
-      for (int i = 0; i < cnst.AppData.metacards!.emotions.length; i++) {
-        if (cnst.AppData.metacards!.emotions[i].id == emotionId) {
-          return cnst.AppData.metacards!.emotions[i];
-        }
-      }
-    }
-    return null;
-  }
+  Emotion? getEmotionById(int emotionId);
 
   String getCurrentEmotionText();
 
@@ -132,10 +123,12 @@ abstract class IWorkMethods {
   List<Widget> getVerbTitle(BuildContext context);
 
   Verb? getVerbById(int id) {
-    if (cnst.AppData.metacards?.verbs.isNotEmpty ?? false) {
-      for (int i = 0; i < cnst.AppData.metacards!.verbs.length; i++) {
-        if (cnst.AppData.metacards!.verbs[i].id == id) {
-          return cnst.AppData.metacards!.verbs[i];
+    if (cnst.AppInitializer.appData.metacards?.verbs.isNotEmpty ?? false) {
+      for (int i = 0;
+          i < cnst.AppInitializer.appData.metacards!.verbs.length;
+          i++) {
+        if (cnst.AppInitializer.appData.metacards!.verbs[i].id == id) {
+          return cnst.AppInitializer.appData.metacards!.verbs[i];
         }
       }
     }
@@ -152,9 +145,7 @@ abstract class IWorkMethods {
   Widget getWorkSelectDialog(
       BuildContext dialogContext, int index, Function() endFunc);
 
-  String getWorkAddText();
+  bool willDeleteOldestWork();
 
   String getVerbBackground();
-
-  WorkState getCurrentWorkState();
 }

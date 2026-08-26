@@ -13,7 +13,7 @@ class WorkItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (index < cnst.AppData.appUser!.works.length) {
+    if (index < cnst.AppInitializer.appData.appUser!.works.length) {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.a, vertical: 2.0.a),
         child: Container(
@@ -26,13 +26,13 @@ class WorkItem extends StatelessWidget {
                 '${index + 1}. ',
                 style: AppTextStyles.normal18,
               ),
-              InkWell(
-                onTap: () {
-                  onTap();
-                },
-                child: Expanded(
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    onTap();
+                  },
                   child: Text(
-                    cnst.AppData.appUser!.works[index].intention,
+                    cnst.AppInitializer.appData.appUser!.works[index].intention,
                     style: AppTextStyles.normal18,
                   ),
                 ),

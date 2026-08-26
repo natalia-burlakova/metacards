@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/general/const/app_colors.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
@@ -18,12 +19,13 @@ class MenuDrawer extends StatefulWidget {
 class _MenuDrawerState extends State<MenuDrawer> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
     return SizedBox(
       width: mediaQuery.size.width * 0.8,
       child: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: Colors.black.withOpacity(0.5),
+          canvasColor: Colors.black.withAlpha(128),
         ),
         child: Drawer(
           elevation: 0,
@@ -70,7 +72,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'МЕНЮ',
+                                l10n.menuTitle,
                                 style: AppTextStyles.bold21,
                                 textAlign: TextAlign.center,
                               ),
@@ -83,29 +85,32 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ),
               ),
               MenuItem(
-                title: "Что такое эмоции?",
+                title: l10n.menuAboutEmotions,
                 navigation: () {
                   context.push('/about_emotions');
                 },
               ),
               MenuItem(
-                title: "Видео-урок",
+                title: l10n.menuVideoLesson,
                 navigation: () {},
               ),
               MenuItem(
-                title: "Творческий режим",
-                titleTextStyle: cnst.AppData.appUser!.creativeModeWork == null
-                    ? null
-                    : AppTextStyles.bold16,
+                title: l10n.menuCreativeMode,
+                titleTextStyle:
+                    cnst.AppInitializer.appData.appUser!.creativeModeWork ==
+                            null
+                        ? null
+                        : AppTextStyles.bold16,
                 navigation: () {
-                  if (cnst.AppData.appUser!.creativeModeWork == null) {
+                  if (cnst.AppInitializer.appData.appUser!.creativeModeWork ==
+                      null) {
                     //включить творческий режим
-                    cnst.AppData.creativeModeTurnOn();
+                    cnst.AppInitializer.appData.creativeModeTurnOn();
                   } else {
                     //выключить
-                    cnst.AppData.creativeModeTurnOff();
+                    cnst.AppInitializer.appData.creativeModeTurnOff();
                   }
-                  while (GoRouter.of(context).location != "/") {
+                  while (GoRouterState.of(context).uri.path != "/") {
                     GoRouter.of(context).pop(true);
                   }
                   if (widget.onUpdate != null) {
@@ -114,7 +119,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 },
               ),
               MenuItem(
-                title: "Сохраненные работы",
+                title: l10n.menuSavedWorks,
                 navigation: () {
                   context.push('/work_list');
                 },
@@ -126,16 +131,16 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   fit: BoxFit.fitWidth,
                 ),
                 height: 80,
-                title: "\"ТОЛЬКО ТЫ\"",
+                title: l10n.menuSchoolName,
                 titleTextStyle: AppTextStyles.bold16,
-                subtitle: "Школа Психологии и Энергопрактики",
+                subtitle: l10n.menuSchoolSubtitle,
                 children: [
                   Container(
                     color: Colors.black,
                     height: 5,
                   ),
                   MenuItem(
-                    title: "О нас",
+                    title: l10n.menuAboutSchool,
                     navigation: () {
                       context.push('/about_school');
                     },
@@ -145,7 +150,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     height: 5,
                   ),
                   MenuItem(
-                    title: "Контакты",
+                    title: l10n.menuContacts,
                     navigation: () {
                       context.push('/contacts');
                     },
@@ -156,7 +161,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     height: 5,
                   ),
                   MenuItem(
-                    title: "Поддержать проект",
+                    title: l10n.menuDonate,
                     navigation: () {
                       context.push('/donate');
                     },
@@ -164,18 +169,24 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 ],
               ),
               MenuItem(
-                title: "Купить печатные колоды",
+                title: l10n.menuBuyDecks,
                 navigation: () {},
               ),
               MenuItem(
-                title: "Как пользоваться приложением",
+                title: l10n.menuHowToUse,
                 navigation: () {},
+              ),
+              MenuItem(
+                title: l10n.menuSettings,
+                navigation: () {
+                  context.push('/settings');
+                },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'Версия 1.1.0',
+                    l10n.menuVersionLabel,
                     style: AppTextStyles.medium18.copyWith(color: Colors.white),
                   ),
                 ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/dashboard/widgets/cards_app_bar.dart';
 import 'package:metacards/general/const/app_colors.dart';
@@ -28,7 +30,19 @@ class PageGeneral extends StatefulWidget {
 class _PageGeneralState extends State<PageGeneral> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (cnst.globalKey.currentState?.isDrawerOpen ?? false) {
+          cnst.globalKey.currentState!.closeDrawer();
+        } else if (widget.canBack) {
+          context.pop(true);
+        } else {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
         drawerEnableOpenDragGesture: false,
         key: widget.pageKey,
         appBar: AppBar(
@@ -66,26 +80,34 @@ class _PageGeneralState extends State<PageGeneral> {
             ),
             titleSpacing: 0.0,
             title: CardsAppBar(
-              intention: (cnst.AppData.appUser?.creativeModeWork == null)
-                  ? ((cnst.AppData.appUser?.works.isNotEmpty ?? false)
+              intention: (cnst
+                          .AppInitializer.appData.appUser?.creativeModeWork ==
+                      null)
+                  ? ((cnst.AppInitializer.appData.appUser?.works.isNotEmpty ??
+                          false)
                       ? cnst
-                          .AppData
+                          .AppInitializer
+                          .appData
                           .appUser!
-                          .works[cnst.AppData.appUser!.currentWorkIndex]
+                          .works[cnst
+                              .AppInitializer.appData.appUser!.currentWorkIndex]
                           .intention
                       : '')
                   : '',
-              showIntention: (cnst.AppData.appUser?.creativeModeWork == null)
-                  ? widget.title.isEmpty
-                  : false,
-              titel: (cnst.AppData.appUser?.creativeModeWork == null)
+              showIntention:
+                  (cnst.AppInitializer.appData.appUser?.creativeModeWork ==
+                          null)
+                      ? widget.title.isEmpty
+                      : false,
+              titel: (cnst.AppInitializer.appData.appUser?.creativeModeWork ==
+                      null)
                   ? widget.title
-                  : 'Творческий режим',
+                  : AppLocalizations.of(context)!.menuCreativeMode,
               onUpdate: () {
                 setState(() {});
                 if (widget.onUpdate != null) {
-              widget.onUpdate!();
-            }
+                  widget.onUpdate!();
+                }
               },
             )),
         backgroundColor:
@@ -98,6 +120,8 @@ class _PageGeneralState extends State<PageGeneral> {
             }
           },
         ),
-        body: widget.body ?? const SizedBox.shrink());
+        body: widget.body ?? const SizedBox.shrink(),
+      ),
+    );
   }
 }

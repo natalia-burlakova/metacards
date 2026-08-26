@@ -12,6 +12,14 @@ analyzer:
     avoid_print: ignore
     non_constant_identifier_names: ignore
     non_nullable_equals_parameter: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 include: package:flutter_lints/flutter.yaml
 
 linter:

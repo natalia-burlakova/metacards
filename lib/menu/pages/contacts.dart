@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/constants.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/ui/page_general.dart';
@@ -10,36 +11,32 @@ class Contacts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PageGeneral(
         canBack: true,
-        title: 'Контакты',
+        title: l10n.menuContacts,
         body: Padding(
             padding: EdgeInsets.symmetric(vertical: 25.0.a, horizontal: 20.0.a),
-            // ignore: prefer_adjacent_string_concatenation
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const LinkContactButton(
+                LinkContactButton(
                   url: 'https://t.me/shkola_tolko_ti',
-                  title: 'Телеграмм КАНАЛ школы "Только Ты"',
+                  title: l10n.contactsTelegramChannelTitle,
                   icon: Icons.telegram,
                 ),
-                const LinkContactButton(
+                LinkContactButton(
                   url: 'https://t.me/+V3tiRxWoeIG61kkO',
-                  title: 'Телеграмм ЧАТ школы "Только Ты"',
+                  title: l10n.contactsTelegramChatTitle,
                   icon: Icons.telegram,
                 ),
-                const LinkContactButton(
+                LinkContactButton(
                   url: 'https://www.youtube.com/@TolkoTiShkola',
-                  title: 'YouTube канал школы "Только Ты"',
+                  title: l10n.contactsYoutubeChannelTitle,
                   icon: Icons.telegram,
                 ),
                 Text(
-                  '''
-
-Связаться с мастерами школы:
-
-▫️Аллой Сысоевой: ''',
+                  '\n\n${l10n.contactsReachMastersIntro}\n\n▫️${l10n.contactsMasterAlla}: ',
                   style: AppTextStyles.normal16,
                 ),
                 Row(
@@ -62,9 +59,7 @@ class Contacts extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '''
-
-▫️Евгенией Зеленской: ''',
+                  '\n\n▫️${l10n.contactsMasterEvgenia}: ',
                   style: AppTextStyles.normal16,
                 ),
                 Row(
@@ -87,9 +82,7 @@ class Contacts extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '''
-
-▫️Ольгой Осадченко: ''',
+                  '\n\n▫️${l10n.contactsMasterOlga}: ',
                   style: AppTextStyles.normal16,
                 ),
                 Row(

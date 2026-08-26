@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/constants.dart';
 import 'package:metacards/data/models/app_user.dart';
 import 'package:metacards/data/models/emotion_in_progress.dart';
@@ -18,55 +21,56 @@ import 'models/emotion.dart';
 class UsualWorkMethods extends IWorkMethods {
   @override
   WorkInProgress? getCurrentWork() {
-    return (cnst.AppData.appUser?.works.isEmpty ?? true)
+    return (cnst.AppInitializer.appData.appUser?.works.isEmpty ?? true)
         ? null
-        : cnst.AppData.appUser
-            ?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
+        : cnst.AppInitializer.appData.appUser?.works[cnst
+                  .AppInitializer
+                  .appData
+                  .appUser
+                  ?.currentWorkIndex ??
+              0];
   }
 
   @override
   void addWork(WorkInProgress work) {
     final works = <WorkInProgress>[];
-    if (cnst.AppData.appUser?.works.isNotEmpty ?? false) {
-      works.addAll(cnst.AppData.appUser!.works);
+    if (cnst.AppInitializer.appData.appUser?.works.isNotEmpty ?? false) {
+      works.addAll(cnst.AppInitializer.appData.appUser!.works);
     }
     if (works.length >= 3) {
       works.removeAt(0);
     }
     works.add(work);
-    AppUser appUser = AppUser(works: cnst.AppData.appUser?.works ?? []);
-    appUser = AppUser(currentWorkIndex: works.length - 1, works: works);
-    cnst.AppData.appUser = appUser;
-    final appData = json.encode(cnst.AppData.appUser!.toJson());
-    print(appData);
+    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
+        .copyWith(currentWorkIndex: works.length - 1, works: works);
+    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
+    if (kDebugMode) print(appData);
     storage.write(key: 'app_data', value: appData);
+    cnst.AppInitializer.appData.updateController.add(true);
   }
 
   @override
   void startWorkAgain(int index) {
-    final works = <WorkInProgress>[];
-    if (cnst.AppData.appUser?.works.isNotEmpty ?? false) {
-      works.addAll(cnst.AppData.appUser!.works);
-    }
-    works[index] = WorkInProgress(intention: works[index].intention);
-    AppUser appUser = AppUser(works: cnst.AppData.appUser?.works ?? []);
-    appUser = AppUser(currentWorkIndex: index, works: works);
-    cnst.AppData.appUser = appUser;
-    final appData = json.encode(cnst.AppData.appUser!.toJson());
-    print(appData);
+    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
+        .copyWith(currentWorkIndex: index);
+    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
+    if (kDebugMode) print(appData);
     storage.write(key: 'app_data', value: appData);
+    cnst.AppInitializer.appData.updateController.add(true);
   }
 
   @override
   void deleteWork(int workIndex) {
     final works = <WorkInProgress>[];
-    works.addAll(AppData.appUser!.works);
+    works.addAll(cnst.AppInitializer.appData.appUser!.works);
     works.removeAt(workIndex);
-    final user = AppUser(currentWorkIndex: works.length - 1, works: works);
-    cnst.AppData.appUser = user;
-    final appData = json.encode(cnst.AppData.appUser!.toJson());
-    print(appData);
+
+    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
+        .copyWith(currentWorkIndex: 0, works: works);
+    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
+    if (kDebugMode) print(appData);
     storage.write(key: 'app_data', value: appData);
+    cnst.AppInitializer.appData.updateController.add(true);
   }
 
   @override
@@ -74,27 +78,34 @@ class UsualWorkMethods extends IWorkMethods {
     var rnd = Random();
     final emotionsCount = rnd.nextInt(20);
     final emotions = <EmotionInProgress>[];
-    final emotionIds = <int>[];
     for (var i = 0; i < emotionsCount; i++) {
       var id = -1;
       id = cnst
-          .AppData
+          .AppInitializer
+          .appData
           .metacards!
-          .emotions[Random().nextInt(cnst.AppData.metacards!.emotions.length)]
+          .emotions[Random().nextInt(
+            cnst.AppInitializer.appData.metacards!.emotions.length,
+          )]
           .id;
-      emotionIds.add(id);
       emotions.add(EmotionInProgress(emotionId: id));
     }
     final works = <WorkInProgress>[];
-    works.addAll(AppData.appUser!.works);
-    works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
-      intention: cnst.AppData.appUser!
-          .works[cnst.AppData.appUser!.currentWorkIndex].intention,
-      emotions: emotions,
-    );
-    cnst.AppData.appUser = cnst.AppData.appUser!.copyWith(works: works);
-    final appData = json.encode(cnst.AppData.appUser!.toJson());
-    print(appData);
+    works.addAll(cnst.AppInitializer.appData.appUser!.works);
+    works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
+        WorkInProgress(
+          intention: cnst
+              .AppInitializer
+              .appData
+              .appUser!
+              .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+              .intention,
+          emotions: emotions,
+        );
+    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
+        .copyWith(works: works);
+    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
+    if (kDebugMode) print(appData);
     storage.write(key: 'app_data', value: appData);
   }
 
@@ -103,8 +114,9 @@ class UsualWorkMethods extends IWorkMethods {
     String title = '';
     final work = getCurrentWork();
     if (work != null && work.emotions.isNotEmpty) {
-      final emotion =
-          getEmotionById(work.emotions[work.currentEmotionIndex].emotionId);
+      final emotion = getEmotionById(
+        work.emotions[work.currentEmotionIndex].emotionId,
+      );
       if (emotion != null) {
         for (int i = 0; i < emotion.lines.length; i++) {
           title += '${emotion.lines[i].title.toUpperCase()} ';
@@ -121,50 +133,67 @@ class UsualWorkMethods extends IWorkMethods {
     if (work != null && work.emotions.isNotEmpty) {
       final emotion = work.emotions[work.currentEmotionIndex];
       if (emotion.verbIds.isNotEmpty) {
-        final verb = cnst.AppData.workMethods!
-            .getVerbById(emotion.verbIds[emotion.currentVerbIndex]);
+        final verb = cnst.AppInitializer.appData.workMethods!.getVerbById(
+          emotion.verbIds[emotion.currentVerbIndex],
+        );
         if (verb != null) {
           for (int i = 0; i < verb.lines.length; i++) {
-            titleList.add(Text(
-              verb.lines[i].title.toUpperCase(),
-              style: AppTextStyles.bold18,
-            ));
+            titleList.add(
+              Text(
+                verb.lines[i].title.toUpperCase(),
+                style: AppTextStyles.bold18,
+              ),
+            );
           }
         }
       }
     }
     if (titleList.isEmpty) {
-      titleList.add(Text(
-        '???',
-        style: AppTextStyles.bold18,
-      ));
+      titleList.add(Text('???', style: AppTextStyles.bold18));
     }
-    return Column(
-      children: titleList,
-    );
+    return Column(children: titleList);
   }
 
   @override
   void nextEmotionSet() {
-    if (cnst.AppData.appUser?.works.isNotEmpty ?? false) {
+    if (cnst.AppInitializer.appData.appUser?.works.isNotEmpty ?? false) {
       final work = cnst
-          .AppData.appUser?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
+          .AppInitializer
+          .appData
+          .appUser
+          ?.works[cnst.AppInitializer.appData.appUser?.currentWorkIndex ?? 0];
       if (work != null &&
           work.currentEmotionIndex < work.emotions.length - 1 &&
           work.emotions[work.currentEmotionIndex].currentVerbIndex ==
               work.emotions[work.currentEmotionIndex].verbIds.length - 1 &&
           work.emotions[work.currentEmotionIndex].verbIds.isNotEmpty) {
         final works = <WorkInProgress>[];
-        works.addAll(AppData.appUser!.works);
-        works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
-            intention: cnst.AppData.appUser!
-                .works[cnst.AppData.appUser!.currentWorkIndex].intention,
-            emotions: cnst.AppData.appUser!
-                .works[cnst.AppData.appUser!.currentWorkIndex].emotions,
-            currentEmotionIndex: work.currentEmotionIndex + 1);
-        cnst.AppData.appUser = AppUser(works: works);
-        final appData = json.encode(cnst.AppData.appUser!.toJson());
-        print(appData);
+        works.addAll(cnst.AppInitializer.appData.appUser!.works);
+        works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
+            WorkInProgress(
+              intention: cnst
+                  .AppInitializer
+                  .appData
+                  .appUser!
+                  .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                  .intention,
+              emotions: cnst
+                  .AppInitializer
+                  .appData
+                  .appUser!
+                  .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                  .emotions,
+              currentEmotionIndex: work.currentEmotionIndex + 1,
+            );
+        cnst.AppInitializer.appData.appUser = cnst
+            .AppInitializer
+            .appData
+            .appUser!
+            .copyWith(works: works);
+        final appData = json.encode(
+          cnst.AppInitializer.appData.appUser!.toJson(),
+        );
+        if (kDebugMode) print(appData);
         storage.write(key: 'app_data', value: appData);
       }
     }
@@ -173,7 +202,10 @@ class UsualWorkMethods extends IWorkMethods {
   @override
   void generateVerbsList() {
     final work = cnst
-        .AppData.appUser?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
+        .AppInitializer
+        .appData
+        .appUser
+        ?.works[cnst.AppInitializer.appData.appUser?.currentWorkIndex ?? 0];
     if (work != null && work.emotions.isNotEmpty) {
       final emotion = work.emotions[work.currentEmotionIndex];
       var rnd = Random();
@@ -181,74 +213,114 @@ class UsualWorkMethods extends IWorkMethods {
       final verbsIds = <int>[];
       for (var i = 0; i < verbsCount; i++) {
         var id = -1;
-        id = cnst.AppData.metacards!
-            .verbs[Random().nextInt(cnst.AppData.metacards!.verbs.length)].id;
+        id = cnst
+            .AppInitializer
+            .appData
+            .metacards!
+            .verbs[Random().nextInt(
+              cnst.AppInitializer.appData.metacards!.verbs.length,
+            )]
+            .id;
         verbsIds.add(id);
       }
 
       EmotionInProgress emotionWithVerbs = EmotionInProgress(
-          emotionId: emotion.emotionId, verbIds: verbsIds, currentVerbIndex: 0);
+        emotionId: emotion.emotionId,
+        verbIds: verbsIds,
+        currentVerbIndex: 0,
+      );
 
       List<EmotionInProgress> emotions = [];
       emotions.addAll(work.emotions);
       emotions[cnst
-          .AppData
-          .appUser!
-          .works[cnst.AppData.appUser!.currentWorkIndex]
-          .currentEmotionIndex] = emotionWithVerbs;
-      final works = <WorkInProgress>[];
-      works.addAll(AppData.appUser!.works);
-      works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
-          intention: cnst.AppData.appUser!
-              .works[cnst.AppData.appUser!.currentWorkIndex].intention,
-          emotions: emotions,
-          currentEmotionIndex: cnst
-              .AppData
+              .AppInitializer
+              .appData
               .appUser!
-              .works[cnst.AppData.appUser!.currentWorkIndex]
-              .currentEmotionIndex);
-      cnst.AppData.appUser = AppUser(works: works);
-      final appData = json.encode(cnst.AppData.appUser!.toJson());
-      print(appData);
+              .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+              .currentEmotionIndex] =
+          emotionWithVerbs;
+      final works = <WorkInProgress>[];
+      works.addAll(cnst.AppInitializer.appData.appUser!.works);
+      works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
+          WorkInProgress(
+            intention: cnst
+                .AppInitializer
+                .appData
+                .appUser!
+                .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                .intention,
+            emotions: emotions,
+            currentEmotionIndex: cnst
+                .AppInitializer
+                .appData
+                .appUser!
+                .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                .currentEmotionIndex,
+          );
+      cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
+          .copyWith(works: works);
+      final appData = json.encode(
+        cnst.AppInitializer.appData.appUser!.toJson(),
+      );
+      if (kDebugMode) print(appData);
       storage.write(key: 'app_data', value: appData);
     }
   }
 
   @override
   void nextVerbSet() {
-    if (cnst.AppData.appUser != null &&
-        cnst.AppData.appUser!.works.isNotEmpty) {
+    if (cnst.AppInitializer.appData.appUser != null &&
+        cnst.AppInitializer.appData.appUser!.works.isNotEmpty) {
       final work = cnst
-          .AppData.appUser?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
+          .AppInitializer
+          .appData
+          .appUser
+          ?.works[cnst.AppInitializer.appData.appUser?.currentWorkIndex ?? 0];
       if (work != null && work.emotions.isNotEmpty) {
         final emotion = work.emotions[work.currentEmotionIndex];
 
         EmotionInProgress emotionWithVerbs = EmotionInProgress(
-            emotionId: emotion.emotionId,
-            verbIds: emotion.verbIds,
-            currentVerbIndex: emotion.currentVerbIndex + 1);
+          emotionId: emotion.emotionId,
+          verbIds: emotion.verbIds,
+          currentVerbIndex: emotion.currentVerbIndex + 1,
+        );
 
         List<EmotionInProgress> emotions = [];
         emotions.addAll(work.emotions);
         emotions[cnst
-            .AppData
-            .appUser!
-            .works[cnst.AppData.appUser!.currentWorkIndex]
-            .currentEmotionIndex] = emotionWithVerbs;
-        final works = <WorkInProgress>[];
-        works.addAll(AppData.appUser!.works);
-        works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
-            intention: cnst.AppData.appUser!
-                .works[cnst.AppData.appUser!.currentWorkIndex].intention,
-            emotions: emotions,
-            currentEmotionIndex: cnst
-                .AppData
+                .AppInitializer
+                .appData
                 .appUser!
-                .works[cnst.AppData.appUser!.currentWorkIndex]
-                .currentEmotionIndex);
-        cnst.AppData.appUser = AppUser(works: works);
-        final appData = json.encode(cnst.AppData.appUser!.toJson());
-        print(appData);
+                .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                .currentEmotionIndex] =
+            emotionWithVerbs;
+        final works = <WorkInProgress>[];
+        works.addAll(cnst.AppInitializer.appData.appUser!.works);
+        works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
+            WorkInProgress(
+              intention: cnst
+                  .AppInitializer
+                  .appData
+                  .appUser!
+                  .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                  .intention,
+              emotions: emotions,
+              currentEmotionIndex: cnst
+                  .AppInitializer
+                  .appData
+                  .appUser!
+                  .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                  .currentEmotionIndex,
+            );
+        cnst.AppInitializer.appData.appUser = cnst
+            .AppInitializer
+            .appData
+            .appUser!
+            .copyWith(works: works);
+        final appData = json.encode(
+          cnst.AppInitializer.appData.appUser!.toJson(),
+        );
+        if (kDebugMode) print(appData);
         storage.write(key: 'app_data', value: appData);
       }
     }
@@ -257,32 +329,49 @@ class UsualWorkMethods extends IWorkMethods {
   @override
   void prevVerbSet() {
     final work = cnst
-        .AppData.appUser?.works[cnst.AppData.appUser?.currentWorkIndex ?? 0];
+        .AppInitializer
+        .appData
+        .appUser
+        ?.works[cnst.AppInitializer.appData.appUser?.currentWorkIndex ?? 0];
     if (work != null && work.emotions.isNotEmpty) {
       final emotion = work.emotions[work.currentEmotionIndex];
       if (emotion.currentVerbIndex > 0) {
         EmotionInProgress emotionWithVerbs = EmotionInProgress(
-            emotionId: emotion.emotionId,
-            verbIds: emotion.verbIds,
-            currentVerbIndex: emotion.currentVerbIndex - 1);
+          emotionId: emotion.emotionId,
+          verbIds: emotion.verbIds,
+          currentVerbIndex: emotion.currentVerbIndex - 1,
+        );
 
         List<EmotionInProgress> emotions = [];
         emotions.addAll(work.emotions);
         emotions[work.currentEmotionIndex] = emotionWithVerbs;
         final works = <WorkInProgress>[];
-        works.addAll(AppData.appUser!.works);
-        works[cnst.AppData.appUser!.currentWorkIndex] = WorkInProgress(
-            intention: cnst.AppData.appUser!
-                .works[cnst.AppData.appUser!.currentWorkIndex].intention,
-            emotions: emotions,
-            currentEmotionIndex: cnst
-                .AppData
-                .appUser!
-                .works[cnst.AppData.appUser!.currentWorkIndex]
-                .currentEmotionIndex);
-        cnst.AppData.appUser = AppUser(works: works);
-        final appData = json.encode(cnst.AppData.appUser!.toJson());
-        print(appData);
+        works.addAll(cnst.AppInitializer.appData.appUser!.works);
+        works[cnst.AppInitializer.appData.appUser!.currentWorkIndex] =
+            WorkInProgress(
+              intention: cnst
+                  .AppInitializer
+                  .appData
+                  .appUser!
+                  .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                  .intention,
+              emotions: emotions,
+              currentEmotionIndex: cnst
+                  .AppInitializer
+                  .appData
+                  .appUser!
+                  .works[cnst.AppInitializer.appData.appUser!.currentWorkIndex]
+                  .currentEmotionIndex,
+            );
+        cnst.AppInitializer.appData.appUser = cnst
+            .AppInitializer
+            .appData
+            .appUser!
+            .copyWith(works: works);
+        final appData = json.encode(
+          cnst.AppInitializer.appData.appUser!.toJson(),
+        );
+        if (kDebugMode) print(appData);
         storage.write(key: 'app_data', value: appData);
       }
     }
@@ -290,31 +379,36 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   Widget getWorkDeleteDialog(
-      BuildContext dialogContext, int index, Function() endFunc) {
+    BuildContext dialogContext,
+    int index,
+    Function() endFunc,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
           child: YesNoDialog(
             height: 210.0.a,
-            title:
-                'Вы точно хотите полностью удалить работу по данному намерению "${AppData.appUser!.works[index].intention}"?',
+            title: AppLocalizations.of(dialogContext)!.workConfirmDeleteWork(
+              cnst.AppInitializer.appData.appUser!.works[index].intention,
+            ),
             yesFunction: () {
               deleteWork(index);
               endFunc();
             },
           ),
-        )
+        ),
       ],
     );
   }
 
   @override
   Emotion? getCurrentEmotion() {
-    final work = cnst.AppData.workMethods!.getCurrentWork();
+    final work = cnst.AppInitializer.appData.workMethods!.getCurrentWork();
     return (work != null && work.emotions.isNotEmpty)
-        ? cnst.AppData.workMethods!
-            .getEmotionById(work.emotions[work.currentEmotionIndex].emotionId)
+        ? cnst.AppInitializer.appData.workMethods!.getEmotionById(
+            work.emotions[work.currentEmotionIndex].emotionId,
+          )
         : null;
   }
 
@@ -331,7 +425,7 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   bool canDeleteWork() {
-    return (cnst.AppData.appUser?.works.isNotEmpty ?? false);
+    return (cnst.AppInitializer.appData.appUser?.works.isNotEmpty ?? false);
   }
 
   @override
@@ -403,7 +497,7 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   bool canPrevVerbTap() {
-    final work = cnst.AppData.workMethods!.getCurrentWork();
+    final work = cnst.AppInitializer.appData.workMethods!.getCurrentWork();
     final emotion = (work != null && work.emotions.isNotEmpty)
         ? work.emotions[work.currentEmotionIndex]
         : null;
@@ -412,7 +506,7 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   List<Widget> getVerbTitle(BuildContext context) {
-    final work = cnst.AppData.workMethods!.getCurrentWork();
+    final work = cnst.AppInitializer.appData.workMethods!.getCurrentWork();
     final emotion = (work != null && work.emotions.isNotEmpty)
         ? work.emotions[work.currentEmotionIndex]
         : null;
@@ -431,8 +525,9 @@ class UsualWorkMethods extends IWorkMethods {
               Text(
                 verb.lines[i].title.toUpperCase(),
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bold21
-                    .copyWith(fontSize: AppTextStyles.bold21.fontSize! * ratio),
+                style: AppTextStyles.bold21.copyWith(
+                  fontSize: AppTextStyles.bold21.fontSize! * ratio,
+                ),
               ),
             );
             if (verb.lines.length == 1) {
@@ -453,7 +548,8 @@ class UsualWorkMethods extends IWorkMethods {
                   verb.lines[i].desc.toUpperCase(),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.medium18.copyWith(
-                      fontSize: AppTextStyles.medium18.fontSize! * ratio),
+                    fontSize: AppTextStyles.medium18.fontSize! * ratio,
+                  ),
                 ),
               );
             }
@@ -480,7 +576,7 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   String getVerbBackground() {
-    final work = cnst.AppData.workMethods!.getCurrentWork();
+    final work = cnst.AppInitializer.appData.workMethods!.getCurrentWork();
     final emotion = (work != null && work.emotions.isNotEmpty)
         ? work.emotions[work.currentEmotionIndex]
         : null;
@@ -491,59 +587,65 @@ class UsualWorkMethods extends IWorkMethods {
 
   @override
   bool canAddWork() {
-    final work = cnst.AppData.workMethods!.getCurrentWork();
+    final work = cnst.AppInitializer.appData.workMethods!.getCurrentWork();
     if (work == null) return false;
     return true;
   }
 
   @override
-  String getWorkAddText() {
-    var textList = "";
-    if ((cnst.AppData.appUser?.works.length ?? 0) == 3) {
-      textList = "Самая старая несохраненная работа будет удалена!";
-    }
-    return textList;
-  }
-
-  @override
-  WorkState getCurrentWorkState() {
-    final work = cnst.AppData.workMethods!.getCurrentWork();
-    if (work == null || work.intention.isEmpty) {
-      return WorkState.notStarted;
-    } else {
-      return (cnst.AppData.appUser?.works.length ?? 0) < 3
-          ? WorkState.inProgressExistplace
-          : WorkState.inProgressFullList;
-    }
+  bool willDeleteOldestWork() {
+    return (cnst.AppInitializer.appData.appUser?.works.length ?? 0) == 3;
   }
 
   @override
   Widget getWorkSelectDialog(
-      BuildContext dialogContext, int index, Function() endFunc) {
+    BuildContext dialogContext,
+    int index,
+    Function() endFunc,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
           child: YesNoDialog(
             height: 210.0.a,
-            title:
-                'Вы хотите вернуться к работе "${AppData.appUser!.works[index].intention}"?',
+            title: AppLocalizations.of(dialogContext)!.workConfirmResumeWork(
+              cnst.AppInitializer.appData.appUser!.works[index].intention,
+            ),
             yesFunction: () {
               returnToWork(index);
-              endFunc();
+              GoRouter.of(dialogContext).go('/');
             },
           ),
-        )
+        ),
       ],
     );
   }
 
   @override
   void returnToWork(int index) {
-    cnst.AppData.appUser =
-        cnst.AppData.appUser!.copyWith(currentWorkIndex: index);
-    final appData = json.encode(cnst.AppData.appUser!.toJson());
-    print(appData);
+    cnst.AppInitializer.appData.appUser = cnst.AppInitializer.appData.appUser!
+        .copyWith(currentWorkIndex: index);
+    final appData = json.encode(cnst.AppInitializer.appData.appUser!.toJson());
+    if (kDebugMode) print(appData);
     storage.write(key: 'app_data', value: appData);
+    cnst.AppInitializer.appData.updateController.add(true);
+  }
+
+  @override
+  Emotion? getEmotionById(int emotionId) {
+    if (cnst.AppInitializer.appData.metacards?.emotions.isNotEmpty ?? false) {
+      for (
+        int i = 0;
+        i < cnst.AppInitializer.appData.metacards!.emotions.length;
+        i++
+      ) {
+        if (cnst.AppInitializer.appData.metacards!.emotions[i].id ==
+            emotionId) {
+          return cnst.AppInitializer.appData.metacards!.emotions[i];
+        }
+      }
+    }
+    return null;
   }
 }

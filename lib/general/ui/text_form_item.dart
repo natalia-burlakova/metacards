@@ -44,7 +44,7 @@ class TextFormItem extends StatefulWidget {
   final TextCapitalization? textCapitalization;
 
   const TextFormItem({
-    Key? key,
+    super.key,
     this.keyboardType = TextInputType.multiline,
     this.hintValue = '',
     this.value,
@@ -62,7 +62,7 @@ class TextFormItem extends StatefulWidget {
     this.isRequired = true,
     this.padding = const EdgeInsets.symmetric(horizontal: 0.2),
     this.textCapitalization,
-  }) : super(key: key);
+  });
 
   @override
   State<TextFormItem> createState() => _TextFormItemState();

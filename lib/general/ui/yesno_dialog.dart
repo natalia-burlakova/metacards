@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/constants.dart';
 import 'package:metacards/general/const/app_colors.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
@@ -9,27 +10,28 @@ class YesNoDialog extends StatelessWidget {
   final String title;
   final String message;
   final double? height;
-  final String noButtonText;
-  final String yesButtonText;
+  final String? noButtonText;
+  final String? yesButtonText;
   final TextStyle? noButtonStyle;
   final TextStyle? yesButtonStyle;
   final Function()? yesFunction;
   final Function()? noFunction;
   const YesNoDialog({
-    Key? key,
+    super.key,
     this.message = '',
     this.height,
     this.title = '',
-    this.noButtonText = 'НЕТ',
-    this.yesButtonText = 'ДА',
+    this.noButtonText,
+    this.yesButtonText,
     this.yesFunction,
     this.noFunction,
     this.noButtonStyle,
     this.yesButtonStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     double ratio = size.height / 700;
     ratio = ratio < 0 ? 1 : ratio;
@@ -67,7 +69,7 @@ class YesNoDialog extends StatelessWidget {
                   flex: 7,
                   child: Button(
                     height: 55.0.a,
-                    label: yesButtonText,
+                    label: yesButtonText ?? l10n.commonYes,
                     color: AppColor.greyLight,
                     labelStyle: yesButtonStyle ??
                         AppTextStyles.normal21.copyWith(
@@ -81,7 +83,7 @@ class YesNoDialog extends StatelessWidget {
                   child: Button(
                     height: 55.0.a,
                     withBorder: true,
-                    label: noButtonText,
+                    label: noButtonText ?? l10n.commonNo,
                     color: AppColor.greyLight,
                     labelStyle: noButtonStyle ??
                         AppTextStyles.normal21.copyWith(

@@ -10,8 +10,8 @@ class ScreenAdaptation extends StatelessWidget {
   const ScreenAdaptation({
     required this.child,
     this.designSize,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

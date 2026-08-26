@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-//import 'package:timeago/timeago.dart' as timeago;
+import 'package:metacards/l10n/app_localizations.dart';
 
 import 'data/constants.dart';
 
@@ -11,6 +10,12 @@ Future<void> main() async {
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  final storedLocaleCode = await storage.read(key: 'locale_code');
+  if (storedLocaleCode != null) {
+    AppInitializer.localeNotifier.value = Locale(storedLocaleCode);
+  }
+
   runApp(const MyApp());
 }
 
@@ -19,19 +24,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('ru'), Locale('en')],
-      locale: const Locale('ru'),
-      title: 'MetaCards',
-      theme: ThemeData(fontFamily: 'Evolventa'),
-      routerConfig: router,
+    return ValueListenableBuilder<Locale>(
+      valueListenable: AppInitializer.localeNotifier,
+      builder: (context, locale, _) => MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('ru'), Locale('en'), Locale('sr')],
+        locale: locale,
+        title: 'MetaCards',
+        theme: ThemeData(fontFamily: 'Evolventa'),
+        routerConfig: router,
+      ),
     );
   }
 }

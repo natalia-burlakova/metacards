@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 import 'package:metacards/data/models/emotion_in_progress.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/data/constants.dart' as cnst;
@@ -23,7 +24,8 @@ class _EmotionCardState extends State<EmotionCard> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height * 0.40;
-    final emotion = cnst.AppData.workMethods!.getCurrentEmotion();
+    final emotion =
+        cnst.AppInitializer.appData.workMethods!.getCurrentEmotion();
     return Stack(
       children: [
         GestureDetector(
@@ -51,8 +53,8 @@ class _EmotionCardState extends State<EmotionCard> {
               alignment: Alignment.center,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children:
-                    cnst.AppData.workMethods!.getEmotionTitle(emotion, context),
+                children: cnst.AppInitializer.appData.workMethods!
+                    .getEmotionTitle(emotion, context),
               ),
             ),
           ),
@@ -72,7 +74,8 @@ class _EmotionCardState extends State<EmotionCard> {
                   Positioned.fill(
                       child: Center(
                           child: Text(
-                    cnst.AppData.workMethods!.getRestEmotionsCount(),
+                    cnst.AppInitializer.appData.workMethods!
+                        .getRestEmotionsCount(),
                     style: AppTextStyles.medium42,
                   ))),
                 ],
@@ -83,14 +86,16 @@ class _EmotionCardState extends State<EmotionCard> {
   }
 
   void nextEmotion() {
-    final emotionState = cnst.AppData.workMethods!.canNextEmotionTap();
+    final l10n = AppLocalizations.of(context)!;
+    final emotionState =
+        cnst.AppInitializer.appData.workMethods!.canNextEmotionTap();
     switch (emotionState) {
       case cnst.EmotionState.intensionAbsent:
         showDialog(
           context: context,
           builder: (_) {
-            return const MessageDialog(
-              message: 'Сначала заполните намерение.',
+            return MessageDialog(
+              message: l10n.emotionCardIntentionMissingWarning,
               height: 150.0,
               child: Icon(
                 Icons.report_problem_outlined,
@@ -101,7 +106,7 @@ class _EmotionCardState extends State<EmotionCard> {
         );
         break;
       case cnst.EmotionState.generateList:
-        cnst.AppData.workMethods!.generateEmotionsList();
+        cnst.AppInitializer.appData.workMethods!.generateEmotionsList();
         if (widget.onUpdate != null) {
           widget.onUpdate!();
         }
@@ -116,24 +121,24 @@ class _EmotionCardState extends State<EmotionCard> {
                 Center(
                   child: YesNoDialog(
                     height: 260.0,
-                    title:
-                        'Поднимаются ли еще негативные эмоции на эту ситуацию? Если да, нажмите кнопку ДОРАБОТАТЬ , если нет, то нажмите кнопку ЗАВЕРШИТЬ.',
-                    yesButtonText: 'ДОРАБОТАТЬ',
+                    title: l10n.emotionCardContinueOrFinishConfirm,
+                    yesButtonText: l10n.emotionCardContinueButton,
                     yesButtonStyle: AppTextStyles.medium18,
                     yesFunction: () {
                       Navigator.pop(dialogContext);
-                      cnst.AppData.workMethods!.startWorkAgain(
-                          cnst.AppData.appUser!.currentWorkIndex);
+                      cnst.AppInitializer.appData.workMethods!.startWorkAgain(
+                          cnst.AppInitializer.appData.appUser!
+                              .currentWorkIndex);
                       if (widget.onUpdate != null) {
                         widget.onUpdate!();
                       }
                     },
-                    noButtonText: 'ЗАВЕРШИТЬ',
+                    noButtonText: l10n.emotionCardFinishButton,
                     noButtonStyle: AppTextStyles.medium18,
                     noFunction: () {
                       Navigator.pop(dialogContext);
-                      cnst.AppData.workMethods!
-                          .deleteWork(cnst.AppData.appUser!.currentWorkIndex);
+                      cnst.AppInitializer.appData.workMethods!.deleteWork(cnst
+                          .AppInitializer.appData.appUser!.currentWorkIndex);
 
                       showDialog(
                         context: context,
@@ -141,7 +146,7 @@ class _EmotionCardState extends State<EmotionCard> {
                           return MessageDialog(
                               height: 270,
                               message:
-                                  'Поздравляем с успешной трансформацией себя!',
+                                  l10n.emotionCardTransformationCelebration,
                               child: Image.asset(
                                 cnst.AssetPaths.celebrationGif,
                               ));
@@ -163,9 +168,8 @@ class _EmotionCardState extends State<EmotionCard> {
         showDialog(
           context: context,
           builder: (_) {
-            return const MessageDialog(
-              message:
-                  'Прежде чем перейти к следующей эмоции проработайте все глаголы этой.',
+            return MessageDialog(
+              message: l10n.emotionCardVerbsNotDoneWarning,
               height: 170.0,
               child: Icon(
                 Icons.report_problem_outlined,
@@ -176,7 +180,7 @@ class _EmotionCardState extends State<EmotionCard> {
         );
         break;
       default: //next emotion
-        cnst.AppData.workMethods!.nextEmotionSet();
+        cnst.AppInitializer.appData.workMethods!.nextEmotionSet();
         if (widget.onUpdate != null) {
           widget.onUpdate!();
         }

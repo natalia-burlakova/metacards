@@ -19,7 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.5 <3.0.0'
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: '>=3.44.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,30 +29,29 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  analyzer: 4.7.0
-  equatable: 2.0.5
+  analyzer: ^9.0.0
+  equatable: ^2.0.8
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_secure_storage: 8.0.0
-  freezed_annotation: 2.2.0
-  json_annotation: 4.7.0
-  url_launcher: 6.1.11
-  url_strategy: 0.2.0
-  visibility_detector: 0.3.3
+  flutter_secure_storage: ^10.0.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.10.0
+  url_launcher: ^6.3.2
+  visibility_detector: ^0.4.0+2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: 1.0.2
-  go_router: 6.5.7
+  cupertino_icons: ^1.0.8
+  go_router: ^17.1.0
   #i18n_extension: 9.0.0
   #timeago: 3.3.0
-  copy_with_extension: 5.0.2
-  flutter_swiper_view: 1.1.8
+  copy_with_extension: ^11.0.0
   intl: any
 
 dev_dependencies:
+  flutter_secure_storage_platform_interface: ^2.0.3
   flutter_test:
     sdk: flutter
 
@@ -60,11 +60,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  build_runner: 2.3.3
-  flutter_lints: 2.0.1
-  freezed: 2.2.0
-  injectable_generator: 1.5.5
-  json_serializable: 6.5.4
+  build_runner: ^2.11.0
+  flutter_lints: ^6.0.0
+  freezed: ^3.2.5
+  injectable_generator: ^2.12.0
+  json_serializable: ^6.12.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -89,6 +89,8 @@ flutter:
   assets:
       - assets/
       - assets/ttf/
-      - assets/data.json
+      - assets/data_ru.json
+      - assets/data_en.json
+      - assets/data_sr.json
   generate: true
   

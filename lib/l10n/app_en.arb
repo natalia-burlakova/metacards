@@ -1,3 +1,76 @@
 {
-  "workTemplateTitle": "work template"
+  "@@locale": "en",
+
+  "workTemplateTitle": "work template",
+
+  "commonYes": "YES",
+  "commonNo": "NO",
+  "workCongratulations": "Congratulations!",
+  "workAllVerbsDoneMessage": "You've worked through all the verbs for this emotion! Move on to the next one.",
+
+  "intentionLabel": "Intention",
+  "cardsAppBarStopIntentionConfirm": "Are you sure you want to stop working on the intention \"{intention}\" and start a new one? Your current work will be saved.",
+  "workOldestWillBeDeleted": "The oldest unsaved work will be deleted!",
+
+  "emotionCardIntentionMissingWarning": "Please fill in an intention first.",
+  "emotionCardContinueOrFinishConfirm": "Are any more negative emotions coming up about this situation? If yes, tap CONTINUE. If not, tap FINISH.",
+  "emotionCardContinueButton": "CONTINUE",
+  "emotionCardFinishButton": "FINISH",
+  "emotionCardTransformationCelebration": "Congratulations on successfully transforming yourself!",
+  "emotionCardVerbsNotDoneWarning": "Before moving to the next emotion, work through all the verbs for this one.",
+
+  "menuTitle": "MENU",
+  "menuAboutEmotions": "What are emotions?",
+  "menuVideoLesson": "Video lesson",
+  "menuCreativeMode": "Creative mode",
+  "menuSavedWorks": "Saved works",
+  "menuSchoolName": "\"ONLY YOU\"",
+  "menuSchoolSubtitle": "School of Psychology and Energy Practice",
+  "menuAboutSchool": "About us",
+  "menuContacts": "Contacts",
+  "menuDonate": "Support the project",
+  "menuBuyDecks": "Buy printed decks",
+  "menuHowToUse": "How to use the app",
+  "menuSettings": "Settings",
+  "menuVersionLabel": "Version 1.1.0",
+
+  "settingsLanguageLabel": "Language",
+  "settingsLanguageRussian": "Russian",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageSerbian": "Serbian",
+
+  "aboutEmotionsBody": "Emotions are a person's reactions (experiences, sensations, moods, feelings) to particular events or actions.\n\nThe main role of emotions is to build a clear link between objective reality and a person's evaluative perception — that is, between what is actually happening in the world and how you assess it.\n\nBeing able to correctly recognize the emotions of others helps a person build relationships, which leads to social adaptability and effectiveness.\n\nManaging emotions is a person's ability to feel their emotions, characterize them, experience them, and then let them go.\n\nDon't confuse managing emotions with suppressing them. In the first case we gain control over ourselves, while in the second we only mute our feelings without solving the problem.\nManaging emotions isn't about suppressing or hiding them, but about being able to recognize, name, take control of, and use them for your own benefit.\n\nEmotions and feelings drive a person to act, influence decision-making and life goals, shape behavior, and are simply necessary for overcoming the difficulties of everyday life.\n\nLiving through feelings and emotional experience make a person more mature. In this way, by managing our emotions and feelings we stay in contact with ourselves, with others, and with the world around us.\n",
+
+  "aboutSchoolBody": "\"Only You\" School of Psychology and Energy Practice\n\nRunning for more than 5 years\n\n 🔐 We offer turnkey training from zero level all the way to master\n\nWork happens both in small groups and in VIP sessions\n\nAll programs can be taken offline or online\n\nThe school's main features:\n 1️⃣ care for the safety and soundness of the training process\n 2️⃣ balance between psychological and energy practices\n 3️⃣ working toward 100% results in the material world\n\nThe training program consists of the following formats:\n  ✔️Lectures\n  ✔️Meditations\n  ✔️Courses\n  ✔️Trainings\n  ✔️Therapy (individual and group)\n  ✔️Family/systemic constellations (combo method)\n  ✔️Marathons\n  ✔️Transformational games",
+
+  "workListEmptyMessage": "No saved works found.",
+
+  "contactsTelegramChannelTitle": "\"Only You\" school Telegram CHANNEL",
+  "contactsTelegramChatTitle": "\"Only You\" school Telegram CHAT",
+  "contactsYoutubeChannelTitle": "\"Only You\" school YouTube channel",
+  "contactsReachMastersIntro": "Contact the school's masters:",
+  "contactsMasterAlla": "Alla Sysoeva",
+  "contactsMasterEvgenia": "Evgenia Zelenskaya",
+  "contactsMasterOlga": "Olga Osadchenko",
+
+  "intentionAddButton": "Start work",
+
+  "workTemplateRefrain": "I see you,\nI hear you,\nI feel you.",
+  "workTemplatePurpose": "I need you in order to ",
+  "workTemplateListen": "... listen to yourself and",
+  "workTemplateRealize": "realize why this emotion",
+  "workTemplateNeedIt": "is needed by you.",
+  "workTemplateStep2Intro1": "Go even deeper",
+  "workTemplateStep2Intro2": "with the help of questions",
+  "workTemplateQuestionWhy": "WHAT FOR?",
+  "workTemplateAnd": " and ",
+  "workTemplateQuestionEvenIf": "EVEN IF...",
+  "workTemplateThanks": "Thank you, emotion,\nfor this experience, and thank you\nto all the people who\ntaught me to feel\nyou!",
+  "workTemplateAccept": "I accept you and give you\na place in my body.",
+  "workTemplateNextVerbButton": "Next verb",
+  "workTemplatePrevVerbButton": "Previous verb",
+
+  "workConfirmDeleteWork": "Are you sure you want to completely delete the work for the intention \"{intention}\"?",
+  "workConfirmResumeWork": "Do you want to return to the work \"{intention}\"?",
+  "creativeModeDisableConfirm": "Turn off creative mode?"
 }

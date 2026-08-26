@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metacards/dashboard/widgets/emotion_card.dart';
@@ -8,7 +10,7 @@ import 'package:metacards/data/constants.dart' as cnst;
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/ui/page_general.dart';
 import 'package:metacards/general/utils/screen_adapt.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:metacards/l10n/app_localizations.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -18,12 +20,26 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  StreamSubscription<bool>? _updateSubscription;
+
   @override
   void initState() {
     super.initState();
-    if (cnst.AppData.appUser == null) {
-      cnst.AppData.getStaticData(context).then((value) => setState(() {}));
+    if (cnst.AppInitializer.appData.appUser == null) {
+      cnst.AppInitializer.appData
+          .initialize(context)
+          .then((value) => setState(() {}));
     }
+
+    // Listen to transcript stream
+    _updateSubscription = cnst.AppInitializer.appData.updateStream.listen(
+      (transcript) {
+        if (mounted) {
+          setState(() {});
+        }
+      },
+      onError: (error) {},
+    );
   }
 
   @override

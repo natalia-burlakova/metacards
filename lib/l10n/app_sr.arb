@@ -1,0 +1,76 @@
+{
+  "@@locale": "sr",
+
+  "workTemplateTitle": "šablon za rad",
+
+  "commonYes": "DA",
+  "commonNo": "NE",
+  "workCongratulations": "Čestitamo!",
+  "workAllVerbsDoneMessage": "Obradili ste sve glagole za ovu emociju! Pređite na sledeću.",
+
+  "intentionLabel": "Namera",
+  "cardsAppBarStopIntentionConfirm": "Da li ste sigurni da želite da prekinete rad na nameri \"{intention}\" i započnete novu? Trenutni rad će biti sačuvan.",
+  "workOldestWillBeDeleted": "Najstariji nesačuvani rad će biti obrisan!",
+
+  "emotionCardIntentionMissingWarning": "Prvo popunite nameru.",
+  "emotionCardContinueOrFinishConfirm": "Da li se javljaju još neke negativne emocije povodom ove situacije? Ako da, pritisnite dugme NASTAVI, ako ne, pritisnite dugme ZAVRŠI.",
+  "emotionCardContinueButton": "NASTAVI",
+  "emotionCardFinishButton": "ZAVRŠI",
+  "emotionCardTransformationCelebration": "Čestitamo na uspešnoj transformaciji sebe!",
+  "emotionCardVerbsNotDoneWarning": "Pre nego što pređete na sledeću emociju, obradite sve glagole za ovu.",
+
+  "menuTitle": "MENI",
+  "menuAboutEmotions": "Šta su emocije?",
+  "menuVideoLesson": "Video lekcija",
+  "menuCreativeMode": "Kreativni režim",
+  "menuSavedWorks": "Sačuvani radovi",
+  "menuSchoolName": "\"SAMO TI\"",
+  "menuSchoolSubtitle": "Škola psihologije i energetske prakse",
+  "menuAboutSchool": "O nama",
+  "menuContacts": "Kontakti",
+  "menuDonate": "Podrži projekat",
+  "menuBuyDecks": "Kupi štampane špilove",
+  "menuHowToUse": "Kako koristiti aplikaciju",
+  "menuSettings": "Podešavanja",
+  "menuVersionLabel": "Verzija 1.1.0",
+
+  "settingsLanguageLabel": "Jezik",
+  "settingsLanguageRussian": "Ruski",
+  "settingsLanguageEnglish": "Engleski",
+  "settingsLanguageSerbian": "Srpski",
+
+  "aboutEmotionsBody": "Emocije su reakcije (doživljaji, osećaji, raspoloženja, osećanja) osobe na određene događaje ili postupke.\n\nGlavna uloga emocija je da uspostave jasnu vezu između objektivne stvarnosti i vrednosnog doživljaja osobe — odnosno između onoga što se stvarno dešava u svetu i onoga kako to procenjujete.\n\nSposobnost da ispravno prepoznajete emocije drugih pomaže osobi da gradi odnose sa ljudima, što dovodi do društvene prilagodljivosti i efikasnosti.\n\nUpravljanje emocijama je sposobnost osobe da oseća svoje emocije, imenuje ih, doživi ih i zatim ih pusti.\n\nNe treba mešati upravljanje emocijama sa njihovim potiskivanjem. U prvom slučaju dobijamo kontrolu nad sobom, a u drugom samo prigušujemo svoja osećanja bez rešavanja problema.\nUpravljanje emocijama ne znači da ih potiskujemo ili skrivamo, već da ih umemo prepoznati, imenovati, staviti pod kontrolu i iskoristiti sebi u korist.\n\nEmocije i osećanja podstiču osobu na akciju, utiču na donošenje odluka i postavljanje životnih ciljeva, određuju ponašanje i jednostavno su neophodne za prevazilaženje teškoća svakodnevnog života.\n\nProživljavanje osećanja i emocionalno iskustvo čine osobu zrelijom. Tako, zahvaljujući upravljanju emocijama i osećanjima, ostajemo u kontaktu sa sobom, sa drugima i sa svetom oko nas.\n",
+
+  "aboutSchoolBody": "Škola psihologije i energetske prakse \"Samo TI\"\n\nPostoji više od 5 godina\n\n 🔐 Nudimo obuku od početnog nivoa do majstora — \"ključ u ruke\"\n\nRad se odvija i u malim grupama i u VIP sesijama\n\nObuku za sve programe moguće je pohađati uzivo ili online\n\nGlavne odlike škole:\n 1️⃣ briga o bezbednosti i zdravom sprovođenju procesa obuke\n 2️⃣ ravnoteža između psiholoških i energetskih praksi\n 3️⃣ rad do 100% rezultata u materijalnom svetu\n\nProgram obuke sastoji se od sledećih formata:\n  ✔️Predavanja\n  ✔️Meditacije\n  ✔️Kursevi\n  ✔️Treninzi\n  ✔️Terapije (individualne i grupne)\n  ✔️Porodične konstelacije (kombo metod)\n  ✔️Maratoni\n  ✔️Transformacione igre",
+
+  "workListEmptyMessage": "Nema sačuvanih radova.",
+
+  "contactsTelegramChannelTitle": "Telegram KANAL škole \"Samo Ti\"",
+  "contactsTelegramChatTitle": "Telegram ćaskanje škole \"Samo Ti\"",
+  "contactsYoutubeChannelTitle": "YouTube kanal škole \"Samo Ti\"",
+  "contactsReachMastersIntro": "Kontaktirajte majstore škole:",
+  "contactsMasterAlla": "Alla Sisojeva",
+  "contactsMasterEvgenia": "Evgenija Zelenska",
+  "contactsMasterOlga": "Olga Osadčenko",
+
+  "intentionAddButton": "Počni rad",
+
+  "workTemplateRefrain": "vidim te,\nčujem te,\nosećam te.",
+  "workTemplatePurpose": "Potrebna si mi da bih ",
+  "workTemplateListen": "... oslušnite sebe i",
+  "workTemplateRealize": "shvatite zašto vam je ova emocija",
+  "workTemplateNeedIt": "potrebna.",
+  "workTemplateStep2Intro1": "Idite još dublje",
+  "workTemplateStep2Intro2": "uz pomoć pitanja",
+  "workTemplateQuestionWhy": "ZAŠTO?",
+  "workTemplateAnd": " i ",
+  "workTemplateQuestionEvenIf": "ČAK I AKO...",
+  "workTemplateThanks": "Hvala ti, emocijo,\nza ovo iskustvo, i hvala\nsvim ljudima koji\nsu me naučili da te\nosećam!",
+  "workTemplateAccept": "Prihvatam te i dajem ti\nmesto u svom telu.",
+  "workTemplateNextVerbButton": "Sledeći glagol",
+  "workTemplatePrevVerbButton": "Prethodni glagol",
+
+  "workConfirmDeleteWork": "Da li ste sigurni da želite potpuno da obrišete rad na nameri \"{intention}\"?",
+  "workConfirmResumeWork": "Da li želite da se vratite radu \"{intention}\"?",
+  "creativeModeDisableConfirm": "Isključiti kreativni režim?"
+}
