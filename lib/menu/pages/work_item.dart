@@ -8,28 +8,38 @@ class WorkItem extends StatelessWidget {
   final int index;
   final Function onDelete;
   final Function onTap;
-  const WorkItem(
-      {super.key, this.index = 0, required this.onDelete, required this.onTap});
+  const WorkItem({
+    super.key,
+    this.index = 0,
+    required this.onDelete,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (index < cnst.AppInitializer.appData.appUser!.works.length) {
+      final isCurrent =
+          index == cnst.AppInitializer.appData.appUser!.currentWorkIndex;
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.a, vertical: 2.0.a),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 5.0.a),
-          color: AppColor.buttonColor,
+          decoration: BoxDecoration(
+            color: AppColor.buttonColor,
+            border: isCurrent
+                ? Border.all(color: AppColor.arrowColor, width: 2.0.a)
+                : null,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${index + 1}. ',
-                style: AppTextStyles.normal18,
-              ),
+              Text('${index + 1}. ', style: AppTextStyles.normal18),
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    onTap();
+                    if (!isCurrent) {
+                      onTap();
+                    }
                   },
                   child: Text(
                     cnst.AppInitializer.appData.appUser!.works[index].intention,
@@ -41,10 +51,7 @@ class WorkItem extends StatelessWidget {
                 onTap: () {
                   onDelete();
                 },
-                child: Icon(
-                  Icons.delete_outline,
-                  size: 40.a,
-                ),
+                child: Icon(Icons.delete_outline, size: 40.a),
               ),
             ],
           ),
