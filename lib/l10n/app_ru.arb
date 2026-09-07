@@ -87,5 +87,12 @@
       "intention": { "type": "String" }
     }
   },
-  "creativeModeDisableConfirm": "Выключить творческий режим?"
+  "creativeModeDisableConfirm": "Выключить творческий режим?",
+
+  "welcomeTitle": "Добро пожаловать!",
+  "welcomeNameLabel": "Как вас зовут?",
+  "welcomeNameHint": "Введите ваше имя",
+  "welcomeLanguageLabel": "Выберите язык",
+  "welcomeContinueButton": "Продолжить",
+  "welcomeNameRequired": "Пожалуйста, введите ваше имя"
 }

@@ -12,13 +12,20 @@ Future<void> main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   String? storedLocaleCode;
+  String? storedUserName;
   try {
     storedLocaleCode = await storage.read(key: 'locale_code');
+    storedUserName = await storage.read(key: 'user_name');
   } catch (_) {
     storedLocaleCode = null;
+    storedUserName = null;
   }
   if (storedLocaleCode != null) {
     AppInitializer.localeNotifier.value = Locale(storedLocaleCode);
+  }
+  if (storedUserName != null && storedUserName.isNotEmpty) {
+    AppInitializer.appData.userName = storedUserName;
+    hasUserProfile = true;
   }
 
   runApp(const MyApp());

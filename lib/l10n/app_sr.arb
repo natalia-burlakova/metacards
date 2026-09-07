@@ -72,5 +72,12 @@
 
   "workConfirmDeleteWork": "Da li ste sigurni da želite potpuno da obrišete rad na nameri \"{intention}\"?",
   "workConfirmResumeWork": "Da li želite da se vratite radu \"{intention}\"?",
-  "creativeModeDisableConfirm": "Isključiti kreativni režim?"
+  "creativeModeDisableConfirm": "Isključiti kreativni režim?",
+
+  "welcomeTitle": "Dobrodošli!",
+  "welcomeNameLabel": "Kako se zovete?",
+  "welcomeNameHint": "Unesite svoje ime",
+  "welcomeLanguageLabel": "Izaberite jezik",
+  "welcomeContinueButton": "Nastavi",
+  "welcomeNameRequired": "Molimo unesite svoje ime"
 }

@@ -205,4 +205,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get creativeModeDisableConfirm => 'Выключить творческий режим?';
+
+  @override
+  String get welcomeTitle => 'Добро пожаловать!';
+
+  @override
+  String get welcomeNameLabel => 'Как вас зовут?';
+
+  @override
+  String get welcomeNameHint => 'Введите ваше имя';
+
+  @override
+  String get welcomeLanguageLabel => 'Выберите язык';
+
+  @override
+  String get welcomeContinueButton => 'Продолжить';
+
+  @override
+  String get welcomeNameRequired => 'Пожалуйста, введите ваше имя';
 }

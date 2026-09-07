@@ -16,8 +16,8 @@ import 'package:metacards/menu/pages/about_emotions.dart';
 import 'package:metacards/menu/pages/about_school.dart';
 import 'package:metacards/menu/pages/contacts.dart';
 import 'package:metacards/menu/pages/donate.dart';
-import 'package:metacards/menu/pages/settings.dart';
 import 'package:metacards/menu/pages/work_list.dart';
+import 'package:metacards/onboarding/welcome_page.dart';
 import 'package:metacards/work/intention_add.dart';
 import 'package:metacards/work/work_template.dart';
 import 'models/app_user.dart';
@@ -36,6 +36,7 @@ class AppData extends ChangeNotifier {
 
   AppUser? appUser;
   MetaCards? metacards;
+  String? userName;
 
   final UsualWorkMethods usualWorkMethods = UsualWorkMethods();
   final CreativeWorkMethods creativeWorkMethods = CreativeWorkMethods();
@@ -92,6 +93,18 @@ class AppData extends ChangeNotifier {
     _updateController.add(true);
   }
 
+  Future<void> saveUserProfile(
+    BuildContext context,
+    String name,
+    String languageCode,
+  ) async {
+    userName = name;
+    await storage.write(key: 'user_name', value: name);
+    if (!context.mounted) return;
+    await setLocale(context, languageCode);
+    hasUserProfile = true;
+  }
+
   void creativeModeTurnOn() {
     final work = CreativeWork(
       emotions: [
@@ -121,6 +134,7 @@ class AppData extends ChangeNotifier {
 
 const storage = FlutterSecureStorage();
 bool isFirstStart = true;
+bool hasUserProfile = false;
 
 class AssetPaths {
   AssetPaths._();
@@ -139,7 +153,21 @@ class AssetPaths {
 }
 
 final GoRouter router = GoRouter(
+  redirect: (BuildContext context, GoRouterState state) {
+    if (!hasUserProfile && state.uri.path != '/welcome') {
+      return '/welcome';
+    }
+    return null;
+  },
   routes: <RouteBase>[
+    GoRoute(
+      path: '/welcome',
+      builder: (BuildContext context, GoRouterState state) =>
+          const ScreenAdaptation(
+            designSize: Size(375, 812),
+            child: WelcomePage(),
+          ),
+    ),
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) =>
@@ -182,11 +210,6 @@ final GoRouter router = GoRouter(
           path: 'contacts',
           builder: (BuildContext context, GoRouterState state) =>
               const Contacts(),
-        ),
-        GoRoute(
-          path: 'settings',
-          builder: (BuildContext context, GoRouterState state) =>
-              const Settings(),
         ),
       ],
     ),

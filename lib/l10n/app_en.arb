@@ -72,5 +72,12 @@
 
   "workConfirmDeleteWork": "Are you sure you want to completely delete the work for the intention \"{intention}\"?",
   "workConfirmResumeWork": "Do you want to return to the work \"{intention}\"?",
-  "creativeModeDisableConfirm": "Turn off creative mode?"
+  "creativeModeDisableConfirm": "Turn off creative mode?",
+
+  "welcomeTitle": "Welcome!",
+  "welcomeNameLabel": "What is your name?",
+  "welcomeNameHint": "Enter your name",
+  "welcomeLanguageLabel": "Choose a language",
+  "welcomeContinueButton": "Continue",
+  "welcomeNameRequired": "Please enter your name"
 }

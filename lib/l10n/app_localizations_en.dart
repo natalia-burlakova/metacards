@@ -205,4 +205,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get creativeModeDisableConfirm => 'Turn off creative mode?';
+
+  @override
+  String get welcomeTitle => 'Welcome!';
+
+  @override
+  String get welcomeNameLabel => 'What is your name?';
+
+  @override
+  String get welcomeNameHint => 'Enter your name';
+
+  @override
+  String get welcomeLanguageLabel => 'Choose a language';
+
+  @override
+  String get welcomeContinueButton => 'Continue';
+
+  @override
+  String get welcomeNameRequired => 'Please enter your name';
 }

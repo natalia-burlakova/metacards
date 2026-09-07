@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:metacards/general/const/app_colors.dart';
 import 'package:metacards/general/const/app_text_styles.dart';
 import 'package:metacards/general/utils/screen_adapt.dart';
+import 'package:metacards/general/ui/language_flag_selector.dart';
 import 'package:metacards/menu/expantion_menu_item.dart';
 import 'package:metacards/menu/menu_item.dart';
 import 'package:metacards/data/constants.dart' as cnst;
@@ -21,6 +22,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final mediaQuery = MediaQuery.of(context);
+    final currentCode = cnst.AppInitializer.localeNotifier.value.languageCode;
+    final selectedCode =
+        cnst.AppData.supportedDataLocales.contains(currentCode)
+            ? currentCode
+            : cnst.AppData.defaultLocale;
     return SizedBox(
       width: mediaQuery.size.width * 0.8,
       child: Theme(
@@ -176,11 +182,15 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 title: l10n.menuHowToUse,
                 navigation: () {},
               ),
-              MenuItem(
-                title: l10n.menuSettings,
-                navigation: () {
-                  context.push('/settings');
-                },
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5.0.a),
+                child: LanguageFlagSelector(
+                  selectedCode: selectedCode,
+                  onSelect: (code) {
+                    cnst.AppInitializer.appData.setLocale(context, code);
+                    setState(() {});
+                  },
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

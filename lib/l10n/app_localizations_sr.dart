@@ -202,4 +202,22 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get creativeModeDisableConfirm => 'Isključiti kreativni režim?';
+
+  @override
+  String get welcomeTitle => 'Dobrodošli!';
+
+  @override
+  String get welcomeNameLabel => 'Kako se zovete?';
+
+  @override
+  String get welcomeNameHint => 'Unesite svoje ime';
+
+  @override
+  String get welcomeLanguageLabel => 'Izaberite jezik';
+
+  @override
+  String get welcomeContinueButton => 'Nastavi';
+
+  @override
+  String get welcomeNameRequired => 'Molimo unesite svoje ime';
 }

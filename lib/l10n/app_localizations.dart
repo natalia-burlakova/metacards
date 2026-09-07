@@ -459,6 +459,42 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Выключить творческий режим?'**
   String get creativeModeDisableConfirm;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добро пожаловать!'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeNameLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как вас зовут?'**
+  String get welcomeNameLabel;
+
+  /// No description provided for @welcomeNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите ваше имя'**
+  String get welcomeNameHint;
+
+  /// No description provided for @welcomeLanguageLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите язык'**
+  String get welcomeLanguageLabel;
+
+  /// No description provided for @welcomeContinueButton.
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить'**
+  String get welcomeContinueButton;
+
+  /// No description provided for @welcomeNameRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пожалуйста, введите ваше имя'**
+  String get welcomeNameRequired;
 }
 
 class _AppLocalizationsDelegate
